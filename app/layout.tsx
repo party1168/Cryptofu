@@ -16,7 +16,8 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: "Coinfolio",
-  description: "Coinfolio is an open-source website designed for cryptocurrencies investor.",
+  description:
+    "Coinfolio is an open-source website designed for cryptocurrencies investor.",
 };
 
 export default function RootLayout({
@@ -27,12 +28,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} flex antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} bg-[#D6EAD6] flex justify-center items-center h-screen`}
       >
-        <Navbar></Navbar>
-        <main className="w-full h-screen">
-          {children}
-        </main>
+          <div className="flex rounded-lg justify-center h-[95%] w-4/5 border-black border-4 ">
+            <Navbar></Navbar>
+            <main className="flex-grow w-full h-full bg-yellow-100 overflow-auto">
+              {children}
+            </main>
+          </div>
       </body>
     </html>
   );
