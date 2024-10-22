@@ -1,17 +1,16 @@
 # Coinfolio
 ---
 
-Coinfolio is an open-source website designed for managing cryptocurrency portfolios. In this project, you can connect your exchange account or Web3 wallet, and Coinfolio will calculate your total holdings. We also provide circular charts and various statistical visualizations. If you have concerns about the safety of Coinfolio, that's understandable. However, since Coinfolio is an open-source project, you can refer to the Getting Started section, which will guide you on how to deploy your local instance of Coinfolio.
+Coinfolio is an open-source website designed for cryptocurrency investors. In this project, you can connect your exchange account or Web3 wallet, and Coinfolio will calculate your total holdings. We also provide circular charts and various statistical visualizations. 
+If you have concerns about the safety of Coinfolio, that's understandable. However, since Coinfolio is an open-source project, you can refer to the Getting Started section, which will guide you on how to deploy your local instance of Coinfolio.
 
 ## 📋 Features
----
 
 - Feature 1  
 - Feature 2  
 - Feature 3  
 
 ## 🛠️ **Getting Started**  
----
 
 To get a local copy up and running, follow these simple steps.
 
@@ -24,8 +23,8 @@ To get a local copy up and running, follow these simple steps.
 
 1. Clone the repo:  
    ```bash
-   git clone https://github.com/your-username/repo.git
-   cd repo
+   git clone https://github.com/party1168/Coinfolio.git
+   cd Coinfolio
 
 ### License
 ---
