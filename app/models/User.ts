@@ -7,16 +7,29 @@ export interface IUser extends Document{
     w_address: Array<string>;
     exchange:Array<string>;
 }
+export interface IWallet extends Document{
+    name: string;
+    address: string;
+}
+export interface IExchange extends Document{
+    name: string;
+    OAuth: string;
+}
 
+const WalletSchema: Schema = new Schema({
+    name: {type: String, required: true},
+    address: {type: String, required: true}
+});
+const ExchangeSchema: Schema = new Schema({
+    name: {type: String, required: true},
+    OAuth: {type: String, required: true}
+});
 const UserSchema: Schema = new Schema({
     name: {type: String , required: true},
     email: {type: String, required: true, unique: true},
     password: {type: String, required:true},
-    w_address: {type: Array<string>},
-    exchange: [{
-        name:{type: String,required:true},
-        OAuth:{type:String,required:false}
-    }]
+    wallet: {type: [WalletSchema], required: false},
+    exchange: {type: [ExchangeSchema], required: false}
 });
 
 const User = mongoose.models.User || mongoose.model<IUser>('User',UserSchema);
