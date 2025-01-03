@@ -1,33 +1,25 @@
 import mongoose from "mongoose";
 
-const dbURL = process.env.MONGODB_URL ;
+let isConnect = false;
 
-let cachedDb: mongoose.Connection | null = null;
+const dbURL = process.env.MONGODB_URI;
 
-const connectDB = async() => {
-    try{
-
-        if(!dbURL){
-            throw new Error(`MONGODB_URL not found ${dbURL}`);
-        }
-        if(cachedDb){
-            console.log('Using cached database connection');
-            return cachedDb;
-        }
-
-        console.log('Establishing new connection...');
-        const db = await mongoose.connect(dbURL);
-
-        cachedDb = db.connection;
-
-        cachedDb.on('connected',()=>{
-            console.log('Connect to database');
-        });
-        
-        return cachedDb;
-    }catch(err){
-        throw err;
+const connectDB = async () => {
+  try {
+    if (isConnect) {
+      return mongoose.connection;
     }
-}
+    if (!dbURL) {
+      throw new Error(`Losting environment variable MONGODB_URI ${dbURL}`);
+    }
+    console.log("Establishing connection to MongoDB...");
+    await mongoose.connect(dbURL);
+    isConnect = true;
+    console.log("Connection established successfully");
+    return mongoose.connection;
+  } catch (err) {
+    throw err;
+  }
+};
 
-export default connectDB
+export default connectDB;
