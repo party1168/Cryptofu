@@ -1,21 +1,28 @@
 import User from "../models/User";
 import connectDB from "./db";
 
-const addUser = async(name:string,
+const addUser = async(
+    uuid:string,
+    name:string,
     email:string,
-    password:string,
+    inputPassword:string,
     wallet :Array<{name:string , address:string}> = [],
     exchange: Array<{name:string,OAuth:string}> = []) => {
     await connectDB();
     const user = new User({
+        uuid: uuid,
         name: name,
         email: email,
-        password: password,
+        password: inputPassword,
         wallet: wallet,
         exchange: exchange
     });
-    await user.save();
-    return user;
+    try{
+        await user.save();
+        return true;
+    }catch(err){
+        throw err;
+    }
 }
 
 export default addUser;

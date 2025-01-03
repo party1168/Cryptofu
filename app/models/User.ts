@@ -25,6 +25,7 @@ const ExchangeSchema: Schema = new Schema({
     OAuth: {type: String, required: true}
 });
 const UserSchema: Schema = new Schema({
+    uuid: {type: String, required: true},
     name: {type: String , required: true},
     email: {type: String, required: true, unique: true},
     password: {type: String, required:true},

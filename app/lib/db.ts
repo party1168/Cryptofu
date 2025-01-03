@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const dbURL = process.env.MONGODB_URL;
+const dbURL = process.env.MONGODB_URL ;
 
 let cachedDb: mongoose.Connection | null = null;
 
