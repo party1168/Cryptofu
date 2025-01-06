@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import User from "../models/User";
 let isConnect = false;
 
 const dbURL = process.env.MONGODB_URI;
@@ -14,6 +14,7 @@ const connectDB = async () => {
     }
     console.log("Establishing connection to MongoDB...");
     await mongoose.connect(dbURL);
+    await User.createIndexes();
     isConnect = true;
     console.log("Connection established successfully");
     return mongoose.connection;

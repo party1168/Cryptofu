@@ -1,5 +1,4 @@
 import mongoose, { Schema, Document } from "mongoose";
-import { trim } from "validator";
 
 export interface IUser extends Document {
   name: string;
@@ -66,5 +65,4 @@ const UserSchema: Schema = new Schema({
 });
 
 const User = mongoose.models.User || mongoose.model<IUser>("User", UserSchema);
-User.createIndexes();
 export default User;
