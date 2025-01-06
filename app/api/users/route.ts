@@ -45,9 +45,8 @@ export async function POST(request: NextRequest) {
   try {
     await connectDB();
     const data = await request.json();
-    const { uuid, name, email, password, wallet, exchange } = data;
+    const { name, email, password, wallet, exchange } = data;
     const isVerify = await addUser(
-      uuid,
       name,
       email,
       password,
