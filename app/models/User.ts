@@ -30,7 +30,7 @@ const UserSchema: Schema = new Schema({
   uuid: {
     type: String,
     required: true,
-    unique: true,
+    index: { unique: true },
     trim: true,
   },
   name: {
@@ -51,7 +51,7 @@ const UserSchema: Schema = new Schema({
     type: String,
     required: true,
   },
-  salt:{
+  salt: {
     type: String,
     required: true,
   },
@@ -61,8 +61,10 @@ const UserSchema: Schema = new Schema({
   },
   exchange: {
     type: [ExchangeSchema],
-    required: false },
+    required: false,
+  },
 });
 
 const User = mongoose.models.User || mongoose.model<IUser>("User", UserSchema);
+User.createIndexes();
 export default User;

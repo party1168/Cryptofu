@@ -6,13 +6,17 @@ import bcrypt from "bcrypt";
 
 // Generate UUID
 const genUUID = async () => {
-  while (true) {
-    const uuid: string = uuidv4();
-    const existingUUID = await User.findOne({ uuid: uuid });
-    if (existingUUID) {
-      continue;
+  try {
+    while (true) {
+      const uuid: string = uuidv4();
+      const existingUUID = await User.findOne({ uuid: uuid });
+      if (existingUUID) {
+        continue;
+      }
+      return uuid;
     }
-    return uuid;
+  } catch (err) {
+    throw err;
   }
 };
 
