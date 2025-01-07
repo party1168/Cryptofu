@@ -8,6 +8,7 @@ interface UserQuery {
   name?: string;
 }
 
+// 取得所有User的資料
 export async function GET(request: NextRequest) {
   try {
     await connectDB();
@@ -41,6 +42,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
+// 新增一筆新的User資料
 export async function POST(request: NextRequest) {
   try {
     await connectDB();
