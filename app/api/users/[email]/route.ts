@@ -3,10 +3,7 @@ import connectDB from "@/app/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 
 // 取得User的資料 By Email
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { email: string } }
-) {
+export async function GET({ params }: { params: { email: string } }) {
   try {
     await connectDB();
     const email = (await params).email;
@@ -78,6 +75,46 @@ export async function POST(
       {
         success: true,
         data: user,
+      },
+      {
+        status: 200,
+      }
+    );
+  } catch (err) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: err,
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+}
+
+// 刪除User的資料 By Email
+export async function DELETE({ params }: { params: { email: string } }) {
+  try {
+    await connectDB();
+    const email = (await params).email;
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "User not found",
+        },
+        {
+          status: 404,
+        }
+      );
+    }
+    await user.remove();
+    return NextResponse.json(
+      {
+        success: true,
+        message: "User deleted successfully",
       },
       {
         status: 200,
