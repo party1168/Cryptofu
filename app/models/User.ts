@@ -1,12 +1,14 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IUser extends Document {
+  uuid: string;
   name: string;
   email: string;
   password: string;
   salt: string;
   w_address: Array<string>;
   exchange: Array<string>;
+  role: string;
 }
 export interface IWallet extends Document {
   name: string;
@@ -61,6 +63,11 @@ const UserSchema: Schema = new Schema({
   exchange: {
     type: [ExchangeSchema],
     required: false,
+  },
+  role: {
+    type: String,
+    required: true,
+    default: "general",
   },
 });
 
