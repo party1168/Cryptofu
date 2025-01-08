@@ -39,7 +39,7 @@ const addUser = async (
   // Generate UUID
   const uuid: string = await genUUID();
   //generate salt
-  const salt: string = bcrypt.genSaltSync(10);
+  const salt: string = bcrypt.genSaltSync(12);
   //assemble salt,uuid,password
   const saltedPassword: string = salt + inputPassword + uuid;
   // Encrypt Password
