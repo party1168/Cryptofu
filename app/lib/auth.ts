@@ -23,6 +23,6 @@ export const verifyToken = (token: string) => {
     };
     return data;
   } catch (err) {
-    throw new Error("Token is not valid");
+    throw err;
   }
 };

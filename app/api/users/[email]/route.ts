@@ -1,9 +1,41 @@
 import User from "@/app/models/User";
 import connectDB from "@/app/lib/db";
 import { NextRequest, NextResponse } from "next/server";
+import { verifyToken } from "@/app/lib/auth";
 
 // 取得User的資料 By Email
-export async function GET({ params }: { params: { email: string } }) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { email: string } }
+) {
+  const authHeader = request.headers.get("Authorization");
+  if (!authHeader) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Authorization header is required",
+      },
+      {
+        status: 401,
+      }
+    );
+  }
+  const token = authHeader.split(" ")[1];
+  let user;
+  try {
+    user = verifyToken(token);
+  } catch (err) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: (err as Error).message,
+      },
+      {
+        status: 401,
+      }
+    );
+  }
+
   try {
     await connectDB();
     const email = (await params).email;
@@ -46,6 +78,33 @@ export async function POST(
   request: NextRequest,
   { params }: { params: { email: string } }
 ) {
+  const authHeader = request.headers.get("Authorization");
+  if (!authHeader) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Authorization header is required",
+      },
+      {
+        status: 401,
+      }
+    );
+  }
+  const token = authHeader.split(" ")[1];
+  let user;
+  try {
+    user = verifyToken(token);
+  } catch (err) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: (err as Error).message,
+      },
+      {
+        status: 401,
+      }
+    );
+  }
   try {
     await connectDB();
     const data = await request.json();
@@ -94,7 +153,37 @@ export async function POST(
 }
 
 // 刪除User的資料 By Email
-export async function DELETE({ params }: { params: { email: string } }) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { email: string } }
+) {
+  const authHeader = request.headers.get("Authorization");
+  if (!authHeader) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Authorization header is required",
+      },
+      {
+        status: 401,
+      }
+    );
+  }
+  const token = authHeader.split(" ")[1];
+  let user;
+  try {
+    user = verifyToken(token);
+  } catch (err) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: (err as Error).message,
+      },
+      {
+        status: 401,
+      }
+    );
+  }
   try {
     await connectDB();
     const email = (await params).email;

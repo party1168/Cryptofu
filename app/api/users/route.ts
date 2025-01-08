@@ -2,24 +2,52 @@ import { NextResponse, NextRequest } from "next/server";
 import addUser from "@/app/lib/addUser";
 import User from "@/app/models/User";
 import connectDB from "@/app/lib/db";
-
-interface UserQuery {
-  email?: string;
-  name?: string;
-}
+import { verifyToken } from "@/app/lib/auth";
 
 // 取得所有User的資料
 export async function GET(request: NextRequest) {
+  const authHeader = request.headers.get("Authorization");
+  if (!authHeader) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Authorization header is required",
+      },
+      {
+        status: 401,
+      }
+    );
+  }
+  const token = authHeader.split(" ")[1];
+  let user;
+  try {
+    user = verifyToken(token);
+  } catch (err) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: (err as Error).message,
+      },
+      {
+        status: 401,
+      }
+    );
+  }
+  if (user.role !== "admin") {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Unauthorized",
+      },
+      {
+        status: 401,
+      }
+    );
+  }
+
   try {
     await connectDB();
-    const searchUser = request.nextUrl.searchParams;
-    const email = searchUser.get("email");
-    const name = searchUser.get("name");
-
-    const query: UserQuery = {};
-    if (email) query.email = email;
-    if (name) query.name = name;
-    const users = await User.find(query);
+    const users = await User.find();
     return NextResponse.json(
       {
         success: true,
@@ -33,7 +61,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        message: err,
+        message: (err as Error).message,
       },
       {
         status: 500,
@@ -48,13 +76,7 @@ export async function POST(request: NextRequest) {
     await connectDB();
     const data = await request.json();
     const { name, email, password, wallet, exchange } = data;
-    const isVerify = await addUser(
-      name,
-      email,
-      password,
-      wallet,
-      exchange
-    );
+    const isVerify = await addUser(name, email, password, wallet, exchange);
     if (isVerify) {
       return NextResponse.json(
         {
@@ -80,7 +102,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        message: err,
+        message: (err as Error).message,
       },
       {
         status: 500,
