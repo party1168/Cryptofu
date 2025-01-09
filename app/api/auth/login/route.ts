@@ -3,7 +3,19 @@ import bcrypt from "bcrypt";
 import connectDB from "@/app/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 import { verifyToken } from "@/app/lib/auth";
-
+/**
+ * 處理用戶登入請求的 POST 方法。
+ *
+ * @param {NextRequest} request - 包含用戶登入資訊的請求物件。
+ * @returns {Promise<NextResponse>} 返回包含登入結果的回應物件。
+ *
+ * @remarks
+ * 此方法會檢查請求的 Authorization 標頭，並驗證 JWT 令牌。
+ * 如果令牌有效，會連接到資料庫並檢查用戶的電子郵件和密碼。
+ * 密碼會與資料庫中的加鹽密碼進行比對。
+ *
+ * @throws {Error} 如果資料庫連接失敗或其他錯誤發生，會返回 500 狀態碼和錯誤訊息。
+ */
 export async function POST(request: NextRequest) {
   const authHeader = request.headers.get("Authorization");
   if (!authHeader) {
@@ -72,7 +84,10 @@ export async function POST(request: NextRequest) {
     }
     const saltedPassword: string =
       existingUser.salt + password + existingUser.uuid;
-    const isVerify: boolean = bcrypt.compareSync(saltedPassword, existingUser.password);
+    const isVerify: boolean = bcrypt.compareSync(
+      saltedPassword,
+      existingUser.password
+    );
     console.log(password);
     console.log(saltedPassword);
     if (isVerify) {

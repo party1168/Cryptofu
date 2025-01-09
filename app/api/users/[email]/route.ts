@@ -3,7 +3,14 @@ import connectDB from "@/app/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 import { verifyToken } from "@/app/lib/auth";
 
-// 取得User的資料 By Email
+/**
+ * 處理 GET 請求以根據電子郵件地址獲取用戶資料。
+ *
+ * @param {NextRequest} request - 請求對象，包含請求頭和其他信息。
+ * @param {Object} params - 路由參數對象。
+ * @param {string} params.email - 用戶的電子郵件地址。
+ * @returns {Promise<NextResponse>} 返回包含用戶資料的 JSON 響應。
+ */
 export async function GET(
   request: NextRequest,
   { params }: { params: { email: string } }
@@ -72,8 +79,14 @@ export async function GET(
     );
   }
 }
-
-// 修改User的資料 By Email
+/**
+ * 處理 POST 請求以更新用戶資料。
+ *
+ * @param {NextRequest} request - 請求對象，包含請求頭和其他信息。
+ * @param {Object} params - 路由參數對象。
+ * @param {string} params.email - 用戶的電子郵件地址。
+ * @returns {Promise<NextResponse>} 返回包含更新後用戶資料的 JSON 響應。
+ */
 export async function POST(
   request: NextRequest,
   { params }: { params: { email: string } }

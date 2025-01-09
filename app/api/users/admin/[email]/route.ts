@@ -1,9 +1,36 @@
+/**
+ * 管理員用戶端點
+ *
+ * @module UserAdminAPI
+ * @description 提供管理員修改和刪除用戶資料的API端點
+ */
 import { NextRequest, NextResponse } from "next/server";
 import User from "@/app/models/User";
 import connectDB from "@/app/lib/db";
 import { verifyToken } from "@/app/lib/auth";
 
-// 修改User的資料 By Email
+/**
+ * 修改用戶資料
+ *
+ * @async
+ * @param {NextRequest} request - HTTP請求物件
+ * @param {Object} params - URL參數
+ * @param {string} params.email - 要修改的用戶電子郵件
+ * @returns {Promise<NextResponse>} 包含操作結果的回應
+ * @throws {Error} 當資料庫連接失敗或其他錯誤發生時
+ *
+ * @description
+ * 允許管理員透過電子郵件修改用戶資料，可以更新以下欄位：
+ * - name: 用戶名稱
+ * - email: 電子郵件
+ * - password: 密碼
+ * - wallet: 錢包資訊
+ * - exchange: 交易所資訊
+ * - role: 用戶角色
+ *
+ * 需要在請求標頭中包含有效的管理員JWT令牌
+ */
+
 export async function POST(
   request: NextRequest,
   { params }: { params: { email: string } }
@@ -35,7 +62,7 @@ export async function POST(
       }
     );
   }
-  if(user.role !== "admin") {
+  if (user.role !== "admin") {
     return NextResponse.json(
       {
         success: false,
@@ -44,7 +71,7 @@ export async function POST(
       {
         status: 401,
       }
-    );  
+    );
   }
   try {
     await connectDB();
@@ -94,7 +121,20 @@ export async function POST(
   }
 }
 
-// 刪除User的資料 By Email
+/**
+ * 刪除用戶資料
+ *
+ * @async
+ * @param {NextRequest} request - HTTP請求物件
+ * @param {Object} params - URL參數
+ * @param {string} params.email - 要刪除的用戶電子郵件
+ * @returns {Promise<NextResponse>} 包含操作結果的回應
+ * @throws {Error} 當資料庫連接失敗或其他錯誤發生時
+ *
+ * @description
+ * 允許管理員透過電子郵件刪除用戶資料
+ * 需要在請求標頭中包含有效的管理員JWT令牌
+ */
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { email: string } }
@@ -126,7 +166,7 @@ export async function DELETE(
       }
     );
   }
-  if(user.role !== "admin") {
+  if (user.role !== "admin") {
     return NextResponse.json(
       {
         success: false,

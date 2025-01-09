@@ -4,6 +4,17 @@ import connectDB from "@/app/lib/db";
 import { verifyToken } from "@/app/lib/auth";
 
 // 取得所有User的資料
+/**
+ * 處理 GET 請求以獲取用戶列表。
+ *
+ * @param {NextRequest} request - 包含請求詳細信息的 NextRequest 物件。
+ * @returns {Promise<NextResponse>} 返回包含用戶列表或錯誤訊息的 NextResponse 物件。
+ *
+ * @remarks
+ * 此函數首先檢查請求是否包含授權標頭。如果沒有授權標頭，則返回 401 狀態碼和錯誤訊息。
+ * 接著，函數會驗證授權標頭中的 JWT 令牌。如果令牌無效或用戶角色不是 "admin"，則返回 401 狀態碼和錯誤訊息。
+ * 最後，函數會連接到資料庫並獲取所有用戶的列表。如果發生錯誤，則返回 500 狀態碼和錯誤訊息。
+ */
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get("Authorization");
   if (!authHeader) {
