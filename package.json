@@ -10,6 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ankr.com/ankr.js": "^0.5.2",
     "@types/axios": "^0.9.36",
     "@types/bcrypt": "^5.0.2",
     "@types/validator": "^13.12.2",
