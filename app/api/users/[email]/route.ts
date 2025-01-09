@@ -28,9 +28,8 @@ export async function GET(
     );
   }
   const token = authHeader.split(" ")[1];
-  let user;
   try {
-    user = verifyToken(token);
+    await verifyToken(token);
   } catch (err) {
     return NextResponse.json(
       {
@@ -120,7 +119,7 @@ export async function POST(
   try {
     await connectDB();
     const data = await request.json();
-    const { name, email, password, wallet, exchange, role } = data;
+    const { name, email, password, wallet, exchange } = data;
     const user = await User.findOne({ email: (await params).email });
     if (!user) {
       return NextResponse.json(

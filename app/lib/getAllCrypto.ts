@@ -1,3 +1,4 @@
+import axios from "axios";
 /**
  * 過濾並格式化路徑數組，只保留符合特定模式的路徑。
  * 

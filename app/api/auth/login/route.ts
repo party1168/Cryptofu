@@ -30,9 +30,8 @@ export async function POST(request: NextRequest) {
     );
   }
   const token = authHeader.split(" ")[1];
-  let user;
   try {
-    user = verifyToken(token);
+    await verifyToken(token);
   } catch (err) {
     return NextResponse.json(
       {
@@ -88,8 +87,6 @@ export async function POST(request: NextRequest) {
       saltedPassword,
       existingUser.password
     );
-    console.log(password);
-    console.log(saltedPassword);
     if (isVerify) {
       return NextResponse.json(
         {
