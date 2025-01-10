@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { address: string } }
+  { params }: { params: Promise<{ address: string }> }
 ) {
   const authHeader = request.headers.get("Authorization");
   if (!authHeader) {
@@ -33,7 +33,7 @@ export async function GET(
     );
   }
   try {
-    if (!params.address) {
+    if (!(await params).address) {
       return NextResponse.json(
         {
           success: false,

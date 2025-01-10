@@ -13,7 +13,7 @@ import { verifyToken } from "@/app/lib/auth";
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { symbol: string } }
+  { params }: { params: Promise<{ symbol: string }> }
 ) {
   const authHeader = request.headers.get("Authorization");
   if (!authHeader) {
