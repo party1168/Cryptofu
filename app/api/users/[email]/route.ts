@@ -104,7 +104,7 @@ export async function POST(
   }
   const token = authHeader.split(" ")[1];
   try {
-    verifyToken(token);
+    await verifyToken(token);
   } catch (err) {
     return NextResponse.json(
       {

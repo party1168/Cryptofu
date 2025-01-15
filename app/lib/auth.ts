@@ -33,7 +33,7 @@ export const blocklistToken = async (token: string) => {
  * @returns 解碼後的用戶信息對象，包括 uuid、email、name 和 role
  * @throws 如果 token 無效或過期，則拋出錯誤
  */
-export const verifyToken = async (token: string) => {
+export const verifyToken = async(token: string) => {
   try {
     const isBlacklisted = await redis.get(token);
     if (isBlacklisted) {

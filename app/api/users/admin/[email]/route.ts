@@ -50,7 +50,7 @@ export async function POST(
   const token = authHeader.split(" ")[1];
   let user;
   try {
-    user = verifyToken(token);
+    user = await verifyToken(token);
   } catch (err) {
     return NextResponse.json(
       {
@@ -154,7 +154,7 @@ export async function DELETE(
   const token = authHeader.split(" ")[1];
   let user;
   try {
-    user = verifyToken(token);
+    user = await verifyToken(token);
   } catch (err) {
     return NextResponse.json(
       {
