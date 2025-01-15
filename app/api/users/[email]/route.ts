@@ -89,7 +89,7 @@ export async function GET(
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ email: string }> }
-) {
+): Promise<NextResponse> {
   const authHeader = request.headers.get("Authorization");
   if (!authHeader) {
     return NextResponse.json(
