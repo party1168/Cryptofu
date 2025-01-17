@@ -1,5 +1,5 @@
-import { getWalletBalances } from "@/app/lib/getWalletBalances";
-import { verifyToken } from "@/app/lib/auth";
+import { getWalletBalances } from "@/lib/getWalletBalances";
+import { verifyToken } from "@/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(

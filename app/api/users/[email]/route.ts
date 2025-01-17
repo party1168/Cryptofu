@@ -1,7 +1,7 @@
-import User from "@/app/models/User";
-import connectDB from "@/app/lib/db";
+import User from "@/models/User";
+import connectDB from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
-import { verifyToken } from "@/app/lib/auth";
+import { verifyToken } from "@/lib/auth";
 
 /**
  * 處理 GET 請求以根據電子郵件地址獲取用戶資料。

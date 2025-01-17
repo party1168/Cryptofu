@@ -1,4 +1,4 @@
-import User from "../models/User";
+import User from "@/models/User";
 import connectDB from "./db";
 import validator from "validator";
 import { v4 as uuidv4 } from "uuid";

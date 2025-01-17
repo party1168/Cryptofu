@@ -1,5 +1,5 @@
-import { verifyToken } from "@/app/lib/auth";
-import { blocklistToken } from "@/app/lib/auth";
+import { verifyToken } from "@/lib/auth";
+import { blocklistToken } from "@/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {

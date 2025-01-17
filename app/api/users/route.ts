@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from "next/server";
-import User from "@/app/models/User";
-import connectDB from "@/app/lib/db";
-import { verifyToken } from "@/app/lib/auth";
+import User from "@/models/User";
+import connectDB from "@/lib/db";
+import { verifyToken } from "@/lib/auth";
 
 // 取得所有User的資料
 /**
