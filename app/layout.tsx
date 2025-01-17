@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import Navbar from "../components/navbar";
+import { LanguageProvider } from "@/contexts/languageProvider";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -15,9 +16,9 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Coinfolio",
+  title: "Cryptofu - 加密貨幣資產整合管理平台",
   description:
-    "Coinfolio is an open-source website designed for cryptocurrencies investor.",
+    "Cryptofu - 加密貨幣整合管理平台，使用Cryptofu管理您的加密貨幣資產。",
 };
 
 export default function RootLayout({
@@ -28,14 +29,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} bg-[#D6EAD6] flex justify-center items-center h-screen`}
+        className={`${geistSans.variable} ${geistMono.variable}  font-sans antialiased`}
       >
-          <div className="flex rounded-lg justify-center h-[95%] w-4/5 border-black border-4 ">
-            <Navbar></Navbar>
-            <main className="flex-grow w-full h-full bg-yellow-100 overflow-auto">
-              {children}
-            </main>
-          </div>
+        <div className="flex flex-col min-h-screen bg-gradient-custom text-gray-100 relative ">
+          <LanguageProvider>
+            <Navbar />
+            {children}
+          </LanguageProvider>
+        </div>
       </body>
     </html>
   );

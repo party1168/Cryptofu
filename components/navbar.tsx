@@ -1,32 +1,20 @@
+"use client";
 import Link from "next/link";
+import { Hexagon } from "lucide-react";
+import { useLanguage } from "@/contexts/languageProvider";
 function Navbar() {
+  const { t } = useLanguage();
   return (
-    <nav className="border border-r-2 border-gray-600 w-64 bg-[#baa380] h-full flex flex-col justify-between">
-      <div>
-        <div className="font-bold text-xl text-center mt-6">
-          <h1>Coinfolio</h1>
+    <nav className="absolute top-0 left-0 right-0 z-10">
+      <div className="container mx-auto px-4">
+        <div className="flex h-20 items-center justify-between">
+          <Link href="/" className="flex items-center space-x-2">
+            <Hexagon className="h-8 w-8 text-purple-500" />
+            <span className="font-bold text-3xl text-gray-100">
+              {t("common.title")}
+            </span>
+          </Link>
         </div>
-        <div className="flex-grow-0 h-4/5">
-          <ul className="">
-            <li className="cursor-pointer rounded-lg m-3 p-2 border border-b text-center">
-              <Link href="/dashboard">DashBoard</Link>
-            </li>
-            <li className="cursor-pointer rounded-lg m-3 p-2 border border-b text-center">
-              <Link href="/position">Position</Link>
-            </li>
-            <li className="cursor-pointer rounded-lg m-3 p-2 border border-b text-center">
-              <Link href="/history">History</Link>
-            </li>
-            <li className="cursor-pointer rounded-lg m-3 p-2 border border-b text-center">
-              <Link href="/portfolio">Portfolio</Link>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div className="border-t  border-gray-600 flex-grow-0 h-1/5">
-            <button>
-                Login
-            </button>
       </div>
     </nav>
   );
