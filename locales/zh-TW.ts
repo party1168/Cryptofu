@@ -1,14 +1,16 @@
+import { subscribe } from "diagnostics_channel";
+
 export default {
     common: {
       title: 'Cryptofu',
-      description: '智能加密貨幣分析和投資平台',
+      description: '加密貨幣資產整合管理平台',
     },
     nav: {
       features: '功能',
       about: '關於我們',
       login: '登入',
     },
-    hero: {
+    subscribe: {
       cta: '訂閱更新',
       emailPlaceholder: '輸入您的電子郵件',
     },

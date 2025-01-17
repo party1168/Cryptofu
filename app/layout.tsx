@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import Navbar from "../components/navbar";
+import Footer from "../components/footer"; 
+import ThemeProvider from "@/components/theme-provider";
 import { LanguageProvider } from "@/contexts/languageProvider";
 import "./globals.css";
 
@@ -27,15 +29,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable}  font-sans antialiased`}
       >
         <div className="flex flex-col min-h-screen bg-gradient-custom text-gray-100 relative ">
-          <LanguageProvider>
-            <Navbar />
-            {children}
-          </LanguageProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <LanguageProvider>
+              <Navbar />
+              {children}
+              <Footer />
+            </LanguageProvider>
+          </ThemeProvider>
         </div>
       </body>
     </html>
