@@ -5,14 +5,37 @@ import { Input } from "./ui/input";
 import { ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/languageProvider";
 import { useState } from "react";
+import validator from "validator";
+import toast from "react-hot-toast";
+import axios from "axios";
 export default function Subscribe() {
   const { t } = useLanguage();
   const [email, setEmail] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Subscribed with email:", email);
-    setEmail("");
+    if (!validator.isEmail(email)) {
+      toast.error("錯誤的Email格式");
+      return;
+    }
+    if (!email) {
+      toast.error("Email是必填的");
+      return;
+    }
+    try {
+      const response = await axios.post("/api/subscribe", { email });
+      if (!response.data.success) {
+        throw new Error(response.data.message);
+      }
+      toast.success("訂閱成功");
+      setEmail("");
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response) {
+        toast.error(`訂閱失敗: ${err.response.data.message}`);
+      } else {
+        toast.error(`訂閱失敗: ${(err as Error).message}`);
+      }
+    }
   };
   return (
     <header className="pt-32 pb-20 relative overflow-hidden">

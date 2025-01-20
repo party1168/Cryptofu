@@ -4,6 +4,7 @@ import Navbar from "../components/navbar";
 import Footer from "../components/footer";
 import ThemeProvider from "@/components/theme-provider";
 import { LanguageProvider } from "@/contexts/languageProvider";
+import { Toaster } from "react-hot-toast";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -34,6 +35,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable}  font-sans antialiased`}
       >
         <div className="flex flex-col min-h-screen bg-gradient-custom text-gray-100 relative ">
+          <Toaster position="bottom-right"  />
           <ThemeProvider
             attribute="class"
             defaultTheme="dark"
