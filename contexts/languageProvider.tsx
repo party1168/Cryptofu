@@ -1,16 +1,16 @@
 "use client";
 
-import React, { createContext, useContext, useState } from "react";
-import zhTW from "@/locales/zh-TW";
+import React, { createContext, useContext, useState, useEffect } from "react";
+import zhTW from "@/locales/zh";
 import en from "@/locales/en";
 
 //type Locale = 'zh-TW' | 'en';
-type Locale = "zh-TW";
-type Translations = typeof zhTW;
+type Locale = "zh-TW" | "en";
+type Translations = typeof zhTW | typeof en;
 
 const translations: Record<Locale, Translations> = {
   "zh-TW": zhTW,
-  //'en': en,
+  "en": en,
 };
 
 type NestedKeyOf<ObjectType extends object> = {

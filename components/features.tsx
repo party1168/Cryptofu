@@ -1,6 +1,13 @@
 "use client";
 import { motion } from "framer-motion";
-import { BarChart2, Lock, Zap, Coins, Globe, Cpu } from "lucide-react";
+import {
+  Shield,
+  Link,
+  BarChart2Icon,
+  Layers,
+  CoinsIcon,
+  Settings,
+} from "lucide-react";
 import { useLanguage } from "@/contexts/languageProvider";
 export default function Features() {
   const { t } = useLanguage();
@@ -18,32 +25,32 @@ export default function Features() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
             {
-              icon: BarChart2,
+              icon: Shield,
               title: t("features.items.0.title"),
               description: t("features.items.0.description"),
             },
             {
-              icon: Lock,
+              icon: Link,
               title: t("features.items.1.title"),
               description: t("features.items.1.description"),
             },
             {
-              icon: Zap,
+              icon: BarChart2Icon,
               title: t("features.items.2.title"),
               description: t("features.items.2.description"),
             },
             {
-              icon: Coins,
+              icon: Layers,
               title: t("features.items.3.title"),
               description: t("features.items.3.description"),
             },
             {
-              icon: Globe,
+              icon: CoinsIcon,
               title: t("features.items.4.title"),
               description: t("features.items.4.description"),
             },
             {
-              icon: Cpu,
+              icon: Settings,
               title: t("features.items.5.title"),
               description: t("features.items.5.description"),
             },
