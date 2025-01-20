@@ -1,16 +1,14 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState} from "react";
 import zhTW from "@/locales/zh";
-import en from "@/locales/en";
 
 //type Locale = 'zh-TW' | 'en';
-type Locale = "zh-TW" | "en";
-type Translations = typeof zhTW | typeof en;
+type Locale = "zh-TW";
+type Translations = typeof zhTW;
 
 const translations: Record<Locale, Translations> = {
   "zh-TW": zhTW,
-  "en": en,
 };
 
 type NestedKeyOf<ObjectType extends object> = {
@@ -33,6 +31,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [locale, setLocale] = useState<Locale>("zh-TW");
+
   const t = (key: string) => {
     const keys = key.split(".");
     let value: any = translations[locale];
