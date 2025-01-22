@@ -23,11 +23,11 @@ export default function Subscribe() {
       return;
     }
     try {
-      const response = await axios.post("/api/subscribe", { email });
-      if (!response.data.success) {
-        throw new Error(response.data.message);
-      }
-      toast.success("訂閱成功");
+      toast.promise(await axios.post("/api/subscribe", { email }),{
+        loading: "訂閱中...",
+        success: "訂閱成功！",
+        error: "訂閱失敗！",
+      });
       setEmail("");
     } catch (err) {
       if (axios.isAxiosError(err) && err.response) {
