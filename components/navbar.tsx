@@ -1,6 +1,5 @@
 "use client";
 import Link from "next/link";
-import { Hexagon } from "lucide-react";
 import { useLanguage } from "@/contexts/languageProvider";
 function Navbar() {
   const { t } = useLanguage();
