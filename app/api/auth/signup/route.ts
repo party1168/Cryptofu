@@ -16,7 +16,7 @@ import addUser from "@/lib/addUser";
  * 4. 調用 `addUser` 函數來添加用戶。
  * 5. 根據 `addUser` 函數的返回值，返回相應的成功或失敗響應。
  */
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     await connectDB();
     const data = await request.json();
