@@ -1,4 +1,5 @@
 "use client";
+import { useRef } from "react";
 import { motion } from "framer-motion";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -8,10 +9,13 @@ import { useState } from "react";
 import validator from "validator";
 import toast from "react-hot-toast";
 import axios from "axios";
+import ReCAPTCHA from "react-google-recaptcha";
+const RECAPTCHA_SITE_KEY: string =
+  process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "";
 export default function Subscribe() {
   const { t } = useLanguage();
   const [email, setEmail] = useState("");
-
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validator.isEmail(email)) {
@@ -23,7 +27,12 @@ export default function Subscribe() {
       return;
     }
     try {
-      const response = await axios.post("/api/subscribe", { email });
+      const token = await recaptchaRef.current?.executeAsync();
+      recaptchaRef.current?.reset();
+      const response = await axios.post("/api/subscribe", {
+        email,
+        recaptchaToken: token,
+      });
       if (!response.data.success) {
         throw new Error(response.data.message);
       }
@@ -75,6 +84,11 @@ export default function Subscribe() {
             onChange={(e) => setEmail(e.target.value)}
             className="max-w-screen-sm h-10 bg-gray-800/30 border-gray-700/50 text-gray-100 mb-5 sm:mb-0 placeholder-gray-400"
             required
+          />
+          <ReCAPTCHA
+            sitekey={RECAPTCHA_SITE_KEY}
+            size="invisible"
+            ref={recaptchaRef}
           />
           <Button
             type="submit"

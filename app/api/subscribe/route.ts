@@ -1,18 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
 import subscribe from "@/lib/subscribe";
+import axios from "axios";
 
 export async function POST(request: NextRequest) {
   try {
+    const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
     const data = await request.json();
     const email = data.email;
-    if (!email) {
+    const recaptchaToken = data.recaptchaToken;
+    if (!email || !recaptchaToken) {
       return NextResponse.json(
         {
           success: false,
-          message: "Email is required",
+          message: "Missing required fields",
         },
         {
           status: 400,
+        }
+      );
+    }
+    const verifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${RECAPTCHA_SECRET_KEY}&response=${recaptchaToken}`;
+    const recaptchaResponse = await axios.post(verifyUrl);
+    const recaptchaData = recaptchaResponse.data;
+    if (!recaptchaData.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "ReCAPTCHA verification failed",
+        },
+        {
+          status: 402,
         }
       );
     }
