@@ -7,7 +7,7 @@ import mongoose, { Schema, Document } from "mongoose";
  * @property {string} email - 使用者電子郵件。
  * @property {string} password - 使用者密碼。
  * @property {string} salt - 密碼鹽值。
- * @property {Array<string>} w_address - 使用者的錢包地址。
+ * @property {Array<string>} wallet - 使用者的錢包地址。
  * @property {Array<string>} exchange - 使用者的交易所。
  * @property {string} role - 使用者角色。
  */
@@ -18,8 +18,8 @@ export interface IUser extends Document {
   email: string;
   password: string;
   salt: string;
-  w_address: Array<string>;
-  exchange: Array<string>;
+  wallet: Array<IWallet>;
+  exchange: Array<IExchange>;
   role: string;
 }
 /**
@@ -32,15 +32,11 @@ export interface IWallet extends Document {
   name: string;
   address: string;
 }
-/**
- * 交易所介面，繼承自 mongoose 的 Document。
- * @interface IExchange
- * @property {string} name - 交易所名稱。
- * @property {string} OAuth - 交易所的 OAuth。
- */
+
 export interface IExchange extends Document {
   name: string;
-  OAuth: string;
+  APIkey: string;
+  APIsecret: string;
 }
 
 /**
@@ -55,16 +51,10 @@ const WalletSchema: Schema = new Schema({
   address: { type: String, required: true },
 });
 
-/**
- * 交易所 Schema 定義。
- * @const {Schema} ExchangeSchema
- * @property {string} name - 交易所名稱，必填。
- * @property {string} APIkey - 交易所的 API 金鑰，必填。
- */
-
 const ExchangeSchema: Schema = new Schema({
   name: { type: String, required: true },
   APIkey: { type: String, required: true },
+  APIsecret: { type: String, required: true }
 });
 
 /**
