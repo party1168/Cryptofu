@@ -13,7 +13,7 @@ import { verifyToken } from "@/lib/auth";
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ email: string }> }
+  { params }: { params: Promise<{ uuid: string }> }
 ): Promise<NextResponse> {
   const authHeader = request.headers.get("Authorization");
   if (!authHeader) {
@@ -44,8 +44,8 @@ export async function GET(
 
   try {
     await connectDB();
-    const email = (await params).email;
-    const user = await User.find({ email: email });
+    const uuid = (await params).uuid;
+    const user = await User.find({ uuid: uuid });
     if (!user) {
       return NextResponse.json(
         {
@@ -88,7 +88,7 @@ export async function GET(
  */
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ email: string }> }
+  { params }: { params: Promise<{ uuid: string }> }
 ): Promise<NextResponse> {
   const authHeader = request.headers.get("Authorization");
   if (!authHeader) {
@@ -120,7 +120,7 @@ export async function POST(
     await connectDB();
     const data = await request.json();
     const { name, email, password } = data;
-    const user = await User.findOne({ email: (await params).email });
+    const user = await User.findOne({ email: (await params).uuid });
     if (!user) {
       return NextResponse.json(
         {

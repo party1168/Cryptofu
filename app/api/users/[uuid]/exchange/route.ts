@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import User from "@/models/User";
 import connectDB from "@/lib/db";
+import addExchange from "@/lib/addExchange";
 import { encryptAES } from "@/lib/rijindael";
 import { verifyToken } from "@/lib/auth";
+import { IExchange } from "@/models/Exchange";
 /**
  * 處理 POST 請求以新增使用者的交易所資訊。
  *
  * @param {NextRequest} request - 請求物件，包含請求的詳細資訊。
  * @param {Object} context - 上下文物件，包含路由參數。
- * @param {Promise<{ email: string }>} context.params - 包含使用者電子郵件的路由參數。
+ * @param {Promise<{ uuid: string }>} context.params - 包含使用者電子郵件的路由參數。
  * @returns {Promise<NextResponse>} 回應物件，包含操作結果和狀態碼。
  *
  * @throws {Error} 如果授權標頭缺失或無效，將返回 401 狀態碼和錯誤訊息。
@@ -17,7 +19,7 @@ import { verifyToken } from "@/lib/auth";
  */
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ email: string }> }
+  { params }: { params: Promise<{ uuid: string }> }
 ): Promise<NextResponse> {
   const authHeader = request.headers.get("Authorization");
   if (!authHeader) {
@@ -47,7 +49,8 @@ export async function POST(
   }
   try {
     await connectDB();
-    const user = await User.findOne({ email: (await params).email });
+    const uuid = (await params).uuid;
+    const user = await User.findOne({ uuid: uuid });
     if (!user) {
       return NextResponse.json(
         {
@@ -74,13 +77,14 @@ export async function POST(
     }
     const encryptedAPIkey = encryptAES(APIkey);
     const encryptedAPIsecret = encryptAES(APIsecret);
-
-    user.exchange.push({
+    const exchange = {
+      userId: uuid,
       name,
       APIkey: encryptedAPIkey,
       APIsecret: encryptedAPIsecret,
-    });
-    await user.save();
+      createAt: new Date(),
+    };
+    await addExchange((await params).uuid, exchange);
     return NextResponse.json(
       {
         success: true,

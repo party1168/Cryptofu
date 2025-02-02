@@ -5,7 +5,7 @@ import connectDB from "@/lib/db";
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ email: string }> }
+  { params }: { params: Promise<{ uuid: string }> }
 ): Promise<NextResponse> {
   const authHeader = request.headers.get("Authorization");
   if (!authHeader) {
@@ -35,7 +35,7 @@ export async function POST(
   }
   try {
     await connectDB();
-    const user = await User.findOne({ email: (await params).email });
+    const user = await User.findOne({ uuid: (await params).uuid });
     if (!user) {
       return NextResponse.json(
         {
@@ -52,7 +52,6 @@ export async function POST(
     if (!name || !address) {
       throw new Error("Name and address are required");
     }
-    user.wallet.push({ name, address });
     await user.save();
     return NextResponse.json(
       {
@@ -62,7 +61,7 @@ export async function POST(
       {
         status: 200,
       }
-    );  
+    );
   } catch (err) {
     if (err instanceof Error) {
       return NextResponse.json(

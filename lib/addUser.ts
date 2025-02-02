@@ -20,13 +20,7 @@ const genUUID = async () => {
   }
 };
 
-const addUser = async (
-  name: string,
-  email: string,
-  inputPassword: string,
-  wallet: Array<{ name: string; address: string }> = [],
-  exchange: Array<{ name: string; OAuth: string }> = []
-) => {
+const addUser = async (name: string, email: string, inputPassword: string) => {
   await connectDB();
   // Validate Email
   if (!validator.isEmail(email)) {
@@ -51,8 +45,6 @@ const addUser = async (
     email: email,
     password: password,
     salt: salt,
-    wallet: wallet,
-    exchange: exchange,
   });
   try {
     await user.save();
