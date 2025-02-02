@@ -1,12 +1,13 @@
-import { NextResponse, NextRequest } from "next/server";
-import { getBinanceSpot } from "@/lib/getBinanceSpot";
-import { verifyToken } from "@/lib/auth";
-import { IExchange } from "@/models/User";
-import { decryptAES } from "@/lib/rijindael";
+import { NextRequest, NextResponse } from "next/server";
 import User from "@/models/User";
 import connectDB from "@/lib/db";
+import { encryptAES } from "@/lib/rijindael";
+import { verifyToken } from "@/lib/auth";
 
-export async function GET(request: NextRequest) {
+export async function POST(
+  request: NextRequest,
+  { params }: { params: Promise<{ email: string }> }
+): Promise<NextResponse> {
   const authHeader = request.headers.get("Authorization");
   if (!authHeader) {
     return NextResponse.json(
@@ -35,8 +36,7 @@ export async function GET(request: NextRequest) {
   }
   try {
     await connectDB();
-    const uuid = request.nextUrl.searchParams.get("uuid");
-    const user = await User.findOne({ uuid: uuid });
+    const user = await User.findOne({ email: (await params).email });
     if (!user) {
       return NextResponse.json(
         {
@@ -48,34 +48,32 @@ export async function GET(request: NextRequest) {
         }
       );
     }
-
-    const binanceExchange = user.exchange.find(
-      (exchange: IExchange) => exchange.name.toLowerCase() === "binance"
-    );
-
-    if (!binanceExchange) {
+    const data = await request.json();
+    const { name, APIkey, APIsecret } = data;
+    if (!(name && APIkey && APIsecret)) {
       return NextResponse.json(
         {
           success: false,
-          message: "Binance exchange not found",
+          message: "Missing required fields",
         },
         {
-          status: 404,
+          status: 400,
         }
       );
     }
+    const encryptedAPIkey = encryptAES(APIkey);
+    const encryptedAPIsecret = encryptAES(APIsecret);
 
-    const encrypted_key = binanceExchange.APIkey;
-    const encrypted_secret = binanceExchange.APIsecret;
-
-    const decrypted_key = decryptAES(encrypted_key);
-    const decrypted_secret = decryptAES(encrypted_secret);
-
-    const spot = await getBinanceSpot(decrypted_key, decrypted_secret);
+    user.exchange.push({
+      name,
+      APIkey: encryptedAPIkey,
+      APIsecret: encryptedAPIsecret,
+    });
+    await user.save();
     return NextResponse.json(
       {
         success: true,
-        data: spot,
+        message: "Exchange added successfully",
       },
       {
         status: 200,
@@ -88,7 +86,7 @@ export async function GET(request: NextRequest) {
         message: (err as Error).message,
       },
       {
-        status: 500,
+        status: 401,
       }
     );
   }

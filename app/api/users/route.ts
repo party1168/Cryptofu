@@ -15,7 +15,7 @@ import { verifyToken } from "@/lib/auth";
  * 接著，函數會驗證授權標頭中的 JWT 令牌。如果令牌無效或用戶角色不是 "admin"，則返回 401 狀態碼和錯誤訊息。
  * 最後，函數會連接到資料庫並獲取所有用戶的列表。如果發生錯誤，則返回 500 狀態碼和錯誤訊息。
  */
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest): Promise<NextResponse> {
   const authHeader = request.headers.get("Authorization");
   if (!authHeader) {
     return NextResponse.json(
@@ -79,4 +79,3 @@ export async function GET(request: NextRequest) {
     );
   }
 }
-

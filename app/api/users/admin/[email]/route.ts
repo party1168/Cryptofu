@@ -34,7 +34,7 @@ import { verifyToken } from "@/lib/auth";
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ email: string }> }
-) {
+): Promise<NextResponse> {
   const authHeader = request.headers.get("Authorization");
   if (!authHeader) {
     return NextResponse.json(
@@ -138,7 +138,7 @@ export async function POST(
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ email: string }> }
-) {
+): Promise<NextResponse> {
   const authHeader = request.headers.get("Authorization");
   if (!authHeader) {
     return NextResponse.json(

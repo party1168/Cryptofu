@@ -14,7 +14,7 @@ import { verifyToken } from "@/lib/auth";
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ email: string }> }
-) {
+): Promise<NextResponse> {
   const authHeader = request.headers.get("Authorization");
   if (!authHeader) {
     return NextResponse.json(
@@ -119,7 +119,7 @@ export async function POST(
   try {
     await connectDB();
     const data = await request.json();
-    const { name, email, password, wallet, exchange } = data;
+    const { name, email, password } = data;
     const user = await User.findOne({ email: (await params).email });
     if (!user) {
       return NextResponse.json(
@@ -136,8 +136,6 @@ export async function POST(
     if (name) user.name = name;
     if (email) user.email = email;
     if (password) user.password = password;
-    if (wallet) user.wallet = wallet;
-    if (exchange) user.exchange = exchange;
 
     await user.save();
 
