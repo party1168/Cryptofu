@@ -1,7 +1,7 @@
 /**
  * 從 Binance 獲取現貨資產資訊。
  *
- * @returns {Promise<Array<{ asset: string, total: string, price: string, totalprice: number }>>} 返回包含資產、總量、價格和總價的資產資訊陣列。
+ * @returns {Promise<Array<{ asset: string, amount: string, price: string, totalprice: number }>>} 返回包含資產、總量、價格和總價的資產資訊陣列。
  * @throws 任何在請求或處理過程中發生的錯誤。
  *
  */
@@ -15,14 +15,14 @@ const BASE_URL = "https://api.binance.com";
 
 export interface SpotBalance {
   asset: string;
-  total: string;
+  amount: string;
   price: number;
   totalprice: number;
 }
 
 interface AssetBalance {
   asset: string;
-  total: string;
+  amount: string;
 }
 
 const convertSpotBalance = async (
@@ -31,7 +31,7 @@ const convertSpotBalance = async (
   return asset.map((asset) => {
     return {
       asset: asset.asset,
-      total: (Number(asset.free) + Number(asset.locked)).toString(),
+      amount: (Number(asset.free) + Number(asset.locked)).toString(),
     };
   });
 };
@@ -42,7 +42,7 @@ const convertFundingBalance = async (
   return asset.map((asset) => {
     return {
       asset: asset.asset,
-      total: (Number(asset.free) + Number(asset.locked)).toString(),
+      amount: (Number(asset.free) + Number(asset.locked)).toString(),
     };
   });
 };
@@ -53,7 +53,7 @@ const convertFlexibleBalance = async (
   return asset.rows.map((asset) => {
     return {
       asset: asset.asset,
-      total: asset.totalAmount,
+      amount: asset.totalAmount,
     };
   });
 };
@@ -64,7 +64,7 @@ const convertLockedBalance = async (
   return asset.rows.map((asset) => {
     return {
       asset: asset.asset,
-      total: asset.amount,
+      amount: asset.amount,
     };
   });
 };
@@ -92,8 +92,8 @@ export const getBinanceSpot = async (API_KEY: string, API_SECRET: string) => {
     const totalBalances = allBalances.reduce((acc, cur) => {
       const existing = acc.find((item) => item.asset === cur.asset);
       if (existing) {
-        existing.total = (
-          Number(existing.total) + Number(cur.total)
+        existing.amount = (
+          Number(existing.amount) + Number(cur.amount)
         ).toString();
       } else {
         acc.push(cur);
@@ -103,10 +103,10 @@ export const getBinanceSpot = async (API_KEY: string, API_SECRET: string) => {
     const totalAssets = await Promise.all<SpotBalance>(
       totalBalances.map(async (asset) => {
         const price = await getCryptoPricesApi(asset.asset);
-        const totalprice = Number(asset.total) * Number(price);
+        const totalprice = Number(asset.amount) * Number(price);
         return {
           asset: asset.asset,
-          total: asset.total,
+          amount: asset.amount,
           price: price,
           totalprice: totalprice,
         };
