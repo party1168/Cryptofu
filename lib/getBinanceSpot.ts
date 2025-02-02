@@ -13,6 +13,13 @@ import {
 import { getCryptoPricesApi } from "./getCryptoPrice";
 const BASE_URL = "https://api.binance.com";
 
+export interface SpotBalance {
+  asset: string;
+  total: string;
+  price: number;
+  totalprice: number;
+}
+
 interface AssetBalance {
   asset: string;
   total: string;
@@ -67,6 +74,7 @@ export const getBinanceSpot = async (API_KEY: string, API_SECRET: string) => {
     const client = new Spot(API_KEY, API_SECRET, { baseURL: BASE_URL });
     const options = {
       recvWindow: 5000,
+      timestamp: Date.now() - 1000,
     };
     const [spot, funding, flexible, locked] = await Promise.all([
       client.userAsset(options),
@@ -92,7 +100,7 @@ export const getBinanceSpot = async (API_KEY: string, API_SECRET: string) => {
       }
       return acc;
     }, [] as AssetBalance[]);
-    const totalAssets = await Promise.all(
+    const totalAssets = await Promise.all<SpotBalance>(
       totalBalances.map(async (asset) => {
         const price = await getCryptoPricesApi(asset.asset);
         const totalprice = Number(asset.total) * Number(price);

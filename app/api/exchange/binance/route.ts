@@ -5,7 +5,7 @@ import { IExchange } from "@/models/User";
 import { decryptAES } from "@/lib/rijindael";
 import User from "@/models/User";
 import connectDB from "@/lib/db";
-
+import { SpotBalance } from "@/lib/getBinanceSpot";
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get("Authorization");
   if (!authHeader) {
@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const binanceExchange = user.exchange.find(
+    const binanceExchange = user.exchange.filter(
       (exchange: IExchange) => exchange.name.toLowerCase() === "binance"
     );
 
@@ -65,31 +65,64 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const encrypted_key = binanceExchange.APIkey;
-    const encrypted_secret = binanceExchange.APIsecret;
+    const allspot = await Promise.all(
+      binanceExchange.map(async (exchange: IExchange) => {
+        const encrypted_key = exchange.APIkey;
+        const encrypted_secret = exchange.APIsecret;
 
-    const decrypted_key = decryptAES(encrypted_key);
-    const decrypted_secret = decryptAES(encrypted_secret);
+        const decrypted_key = decryptAES(encrypted_key);
+        const decrypted_secret = decryptAES(encrypted_secret);
 
-    const spot = await getBinanceSpot(decrypted_key, decrypted_secret);
+        const spot = await getBinanceSpot(decrypted_key, decrypted_secret);
+        return spot;
+      })
+    );
+
+    let allBalances: SpotBalance[] = allspot.reduce((acc, spot) => {
+      const existing = acc.find(
+        (item: SpotBalance) => item.asset === spot.asset
+      );
+      if (existing) {
+        existing.total = (
+          Number(existing.total) + Number(spot.total)
+        ).toString();
+      } else {
+        acc.push(spot);
+      }
+    });
+
+    allBalances = allBalances.sort((a, b) => b.totalprice - a.totalprice);
+
     return NextResponse.json(
       {
         success: true,
-        data: spot,
+        data: allBalances,
       },
       {
         status: 200,
       }
     );
   } catch (err) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: (err as Error).message,
-      },
-      {
-        status: 500,
-      }
-    );
+    if (err instanceof Error) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: err.message,
+        },
+        {
+          status: 500,
+        }
+      );
+    } else {
+      return NextResponse.json(
+        {
+          success: false,
+          message: err,
+        },
+        {
+          status: 500,
+        }
+      );
+    }
   }
 }
