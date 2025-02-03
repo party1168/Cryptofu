@@ -175,3 +175,66 @@ export async function PATCH(request: NextRequest) {
     }
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  const authHeader = request.headers.get("Authorization");
+  if (!authHeader) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Authorization header is required",
+      },
+      {
+        status: 401,
+      }
+    );
+  }
+  const token = authHeader.split(" ")[1];
+  try {
+    const jwtData = await verifyToken(token);
+    await connectDB();
+    const deletedUser = await User.findOneAndDelete({ uuid: jwtData.uuid });
+    if (!deletedUser) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "User not found",
+        },
+        {
+          status: 404,
+        }
+      );
+    }
+    return NextResponse.json(
+      {
+        success: true,
+        message: "User deleted successfully",
+      },
+      {
+        status: 200,
+      }
+    );
+  } catch (err) {
+    if (err instanceof Error) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: err.message,
+        },
+        {
+          status: 401,
+        }
+      );
+    } else {
+      return NextResponse.json(
+        {
+          success: false,
+          message: err,
+        },
+        {
+          status: 401,
+        }
+      );
+    }
+  }
+}
