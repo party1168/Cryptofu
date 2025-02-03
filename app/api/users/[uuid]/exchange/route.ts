@@ -4,7 +4,6 @@ import connectDB from "@/lib/db";
 import addExchange from "@/lib/addExchange";
 import { encryptAES } from "@/lib/rijindael";
 import { verifyToken } from "@/lib/auth";
-import { IExchange } from "@/models/Exchange";
 /**
  * 處理 POST 請求以新增使用者的交易所資訊。
  *
@@ -84,7 +83,7 @@ export async function POST(
       APIsecret: encryptedAPIsecret,
       createAt: new Date(),
     };
-    await addExchange((await params).uuid, exchange);
+    await addExchange(uuid, exchange);
     return NextResponse.json(
       {
         success: true,

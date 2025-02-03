@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import User from "@/models/User";
 import { verifyToken } from "@/lib/auth";
 import connectDB from "@/lib/db";
+import addWallet from "@/lib/addWallet";
 
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ uuid: string }> }
-): Promise<NextResponse> {
+) {
   const authHeader = request.headers.get("Authorization");
   if (!authHeader) {
     return NextResponse.json(
@@ -35,7 +36,8 @@ export async function POST(
   }
   try {
     await connectDB();
-    const user = await User.findOne({ uuid: (await params).uuid });
+    const uuid = (await params).uuid;
+    const user = await User.findOne({ uuid: uuid });
     if (!user) {
       return NextResponse.json(
         {
@@ -48,15 +50,20 @@ export async function POST(
       );
     }
     const data = await request.json();
-    const { name, address } = data;
-    if (!name || !address) {
-      throw new Error("Name and address are required");
-    }
-    await user.save();
+    const { label, address, blockchain, type } = data;
+    const wallet = {
+      userId: uuid,
+      label,
+      address,
+      blockchain,
+      type,
+      createAt: new Date(),
+    };
+    await addWallet(uuid, wallet);
     return NextResponse.json(
       {
         success: true,
-        message: "Exchange added successfully",
+        message: "Wallet added successfully",
       },
       {
         status: 200,
@@ -70,7 +77,7 @@ export async function POST(
           message: err.message,
         },
         {
-          status: 400,
+          status: 500,
         }
       );
     } else {
