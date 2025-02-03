@@ -17,7 +17,8 @@ const ExchangeSchema: Schema = new Schema({
 });
 
 const Exchange =
-  mongoose.model<IExchange>("Exchange", ExchangeSchema) ||
-  mongoose.models.Exchange;
+  mongoose.models.Exchange ||
+  mongoose.model<IExchange>("Exchange", ExchangeSchema);
 
 export default Exchange;
+0;

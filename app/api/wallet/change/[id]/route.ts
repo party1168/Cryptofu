@@ -1,10 +1,10 @@
-import { getWalletBalances } from "@/lib/getWalletBalances";
-import { verifyToken } from "@/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
+import changeWallet from "@/lib/changeWallet";
+import { verifyToken } from "@/lib/auth";
 
-export async function GET(
+export async function PATCH(
   request: NextRequest,
-  { params }: { params: Promise<{ address: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const authHeader = request.headers.get("Authorization");
   if (!authHeader) {
@@ -33,47 +33,40 @@ export async function GET(
     );
   }
   try {
-    if (!(await params).address) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Address is required",
-        },
-        {
-          status: 400,
-        }
-      );
-    }
-    const data = await getWalletBalances((await params).address);
-    if (!data) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "No data found",
-        },
-        {
-          status: 404,
-        }
-      );
-    }
+    const id = (await params).id;
+    const data = await request.json();
+    const updatedWallet = await changeWallet(id, data);
     return NextResponse.json(
       {
         success: true,
-        data: data,
+        message: "Wallet updated successfully",
+        data: updatedWallet,
       },
       {
         status: 200,
       }
     );
   } catch (err) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: (err as Error).message,
-      },
-      {
-        status: 401,
-      }
-    );
+    if (err instanceof Error) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: err.message,
+        },
+        {
+          status: 400,
+        }
+      );
+    } else {
+      return NextResponse.json(
+        {
+          success: false,
+          message: err,
+        },
+        {
+          status: 500,
+        }
+      );
+    }
   }
 }

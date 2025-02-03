@@ -4,6 +4,9 @@ import { verifyToken } from "@/lib/auth";
 import connectDB from "@/lib/db";
 import addWallet from "@/lib/addWallet";
 
+//取得用戶所有的錢包
+
+
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ uuid: string }> }

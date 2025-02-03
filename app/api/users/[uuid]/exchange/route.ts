@@ -4,6 +4,9 @@ import connectDB from "@/lib/db";
 import addExchange from "@/lib/addExchange";
 import { encryptAES } from "@/lib/rijindael";
 import { verifyToken } from "@/lib/auth";
+
+//取得用戶所有的交易所
+
 /**
  * 處理 POST 請求以新增使用者的交易所資訊。
  *

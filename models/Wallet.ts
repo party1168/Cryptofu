@@ -19,6 +19,6 @@ const WalletSchema: Schema = new Schema({
 });
 
 const Wallet =
-  mongoose.model<IWallet>("Wallet", WalletSchema) || mongoose.models.Wallet;
+  mongoose.models.Wallet || mongoose.model<IWallet>("Wallet", WalletSchema);
 
 export default Wallet;

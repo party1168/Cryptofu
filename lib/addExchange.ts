@@ -2,7 +2,7 @@ import Exchange from "@/models/Exchange";
 import connectDB from "@/lib/db";
 import User from "@/models/User";
 
-interface ExchangeParams {
+export interface ExchangeParams {
   userId: string;
   name: string;
   APIkey: string;

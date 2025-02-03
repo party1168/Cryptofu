@@ -2,7 +2,7 @@ import Wallet from "@/models/Wallet";
 import connectDB from "@/lib/db";
 import User from "@/models/User";
 
-interface WalletParams {
+export interface WalletParams {
   userId: string;
   label: string;
   address: string;
