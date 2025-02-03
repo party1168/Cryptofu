@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import User from "@/models/User";
 import connectDB from "@/lib/db";
 import addExchange from "@/lib/addExchange";
 import { encryptAES } from "@/lib/rijindael";
@@ -110,18 +109,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const jwtData = await verifyToken(token);
     await connectDB();
-    const user = await User.findOne({ uuid: jwtData.uuid });
-    if (!user) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "User not found",
-        },
-        {
-          status: 404,
-        }
-      );
-    }
     const data = await request.json();
     const { name, APIkey, APIsecret } = data;
     if (!(name && APIkey && APIsecret)) {

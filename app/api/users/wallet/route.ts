@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import User from "@/models/User";
 import Wallet from "@/models/Wallet";
 import { verifyToken } from "@/lib/auth";
 import connectDB from "@/lib/db";
@@ -109,18 +108,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const jwtData = await verifyToken(token);
     await connectDB();
-    const user = await User.findOne({ uuid: jwtData.uuid });
-    if (!user) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "User not found",
-        },
-        {
-          status: 404,
-        }
-      );
-    }
     const data = await request.json();
     const { label, address, blockchain, type } = data;
     const wallet = {
