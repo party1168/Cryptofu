@@ -78,10 +78,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     }
   }
 }
-export async function POST(
-  request: NextRequest,
-  { params }: { params: Promise<{ uuid: string }> }
-): Promise<NextResponse> {
+export async function POST(request: NextRequest): Promise<NextResponse> {
   const authHeader = request.headers.get("Authorization");
   if (!authHeader) {
     return NextResponse.json(
@@ -96,22 +93,9 @@ export async function POST(
   }
   const token = authHeader.split(" ")[1];
   try {
-    await verifyToken(token);
-  } catch (err) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: (err as Error).message,
-      },
-      {
-        status: 401,
-      }
-    );
-  }
-  try {
+    const jwtData = await verifyToken(token);
     await connectDB();
-    const uuid = (await params).uuid;
-    const user = await User.findOne({ uuid: uuid });
+    const user = await User.findOne({ uuid: jwtData.uuid });
     if (!user) {
       return NextResponse.json(
         {
@@ -126,14 +110,14 @@ export async function POST(
     const data = await request.json();
     const { label, address, blockchain, type } = data;
     const wallet = {
-      userId: uuid,
+      userId: jwtData.uuid,
       label,
       address,
       blockchain,
       type,
       createAt: new Date(),
     };
-    await addWallet(uuid, wallet);
+    await addWallet(jwtData.uuid, wallet);
     return NextResponse.json(
       {
         success: true,
