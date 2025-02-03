@@ -74,7 +74,7 @@ export const getBinanceSpot = async (API_KEY: string, API_SECRET: string) => {
     const client = new Spot(API_KEY, API_SECRET, { baseURL: BASE_URL });
     const options = {
       recvWindow: 5000,
-      timestamp: Date.now() - 1000,
+      useServerTime:true
     };
     const [spot, funding, flexible, locked] = await Promise.all([
       client.userAsset(options),
