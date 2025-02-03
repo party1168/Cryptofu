@@ -4,25 +4,10 @@ import connectDB from "@/lib/db";
 import addExchange from "@/lib/addExchange";
 import { encryptAES } from "@/lib/rijindael";
 import { verifyToken } from "@/lib/auth";
+import Exchange from "@/models/Exchange";
 
 //取得用戶所有的交易所
-
-/**
- * 處理 POST 請求以新增使用者的交易所資訊。
- *
- * @param {NextRequest} request - 請求物件，包含請求的詳細資訊。
- * @param {Object} context - 上下文物件，包含路由參數。
- * @param {Promise<{ uuid: string }>} context.params - 包含使用者電子郵件的路由參數。
- * @returns {Promise<NextResponse>} 回應物件，包含操作結果和狀態碼。
- *
- * @throws {Error} 如果授權標頭缺失或無效，將返回 401 狀態碼和錯誤訊息。
- * @throws {Error} 如果資料庫連接失敗或使用者未找到，將返回相應的狀態碼和錯誤訊息。
- * @throws {Error} 如果請求中缺少必需的欄位，將返回 400 狀態碼和錯誤訊息。
- */
-export async function POST(
-  request: NextRequest,
-  { params }: { params: Promise<{ uuid: string }> }
-): Promise<NextResponse> {
+export async function GET(request: NextRequest) {
   const authHeader = request.headers.get("Authorization");
   if (!authHeader) {
     return NextResponse.json(
@@ -37,22 +22,72 @@ export async function POST(
   }
   const token = authHeader.split(" ")[1];
   try {
-    await verifyToken(token);
+    const jwtData = await verifyToken(token);
+    await connectDB();
+    const exchanges = await Exchange.find({ userId: jwtData.uuid });
+    if (exchanges.length === 0) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "No exchanges found",
+        },
+        {
+          status: 404,
+        }
+      );
+    }
+    return NextResponse.json(
+      {
+        success: true,
+        data: exchanges,
+      },
+      {
+        status: 200,
+      }
+    );
   } catch (err) {
+    if (err instanceof Error) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: err.message,
+        },
+        {
+          status: 401,
+        }
+      );
+    } else {
+      return NextResponse.json(
+        {
+          success: false,
+          message: err,
+        },
+        {
+          status: 500,
+        }
+      );
+    }
+  }
+}
+
+export async function POST(request: NextRequest): Promise<NextResponse> {
+  const authHeader = request.headers.get("Authorization");
+  if (!authHeader) {
     return NextResponse.json(
       {
         success: false,
-        message: (err as Error).message,
+        message: "Authorization header is required",
       },
       {
         status: 401,
       }
     );
   }
+  const token = authHeader.split(" ")[1];
   try {
+    const jwtData = await verifyToken(token);
     await connectDB();
-    const uuid = (await params).uuid;
-    const user = await User.findOne({ uuid: uuid });
+    const user = await User.findOne({ uuid: jwtData.uuid });
     if (!user) {
       return NextResponse.json(
         {
@@ -80,13 +115,13 @@ export async function POST(
     const encryptedAPIkey = encryptAES(APIkey);
     const encryptedAPIsecret = encryptAES(APIsecret);
     const exchange = {
-      userId: uuid,
+      userId: jwtData.uuid,
       name,
       APIkey: encryptedAPIkey,
       APIsecret: encryptedAPIsecret,
       createAt: new Date(),
     };
-    await addExchange(uuid, exchange);
+    await addExchange(jwtData.uuid, exchange);
     return NextResponse.json(
       {
         success: true,

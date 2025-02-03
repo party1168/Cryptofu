@@ -78,6 +78,20 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     }
   }
 }
+/**
+ * 處理使用者的 POST 請求以新增錢包資料。
+ *
+ * 此函式首先從請求標頭中取得 "Authorization" 欄位，並從中解析出 JWT Token，接著驗證該 Token 是否有效。驗證通過後，
+ * 會嘗試在資料庫中查找對應的使用者，若不存在則回傳 404 狀態與錯誤訊息。接下來，從請求主體中解析出錢包相關資料，
+ * 包含 label、address、blockchain 以及 type，並將此資料與使用者 UUID 綁定後新增至資料庫中。若新增成功，
+ * 則回傳一個包含成功訊息與 HTTP 200 狀態碼的 JSON 回應；若在執行過程中發生錯誤則回傳相應錯誤訊息與狀態碼。
+ *
+ * @param request - Next.js 的 NextRequest 物件，包含請求的相關資訊及主體資料。
+ * @returns 一個 Promise，解析後回傳含有操作結果的 NextResponse 物件。
+ *
+ * @throws 當缺少 Authorization 標頭、驗證 JWT 失敗或使用者不存在時，會分別回傳相應的 401 或 404 HTTP 狀態碼與錯誤訊息。
+ *         若在新增錢包資料過程中發生其他錯誤，將回傳 HTTP 500 狀態碼以及錯誤訊息。
+ */
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const authHeader = request.headers.get("Authorization");
   if (!authHeader) {
