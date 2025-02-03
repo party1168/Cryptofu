@@ -245,7 +245,21 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
     }
   }
 }
-
+/**
+ * 處理使用者的 DELETE 請求以刪除錢包資料。
+ *
+ * 此函式首先從請求標頭中取得 "Authorization" 欄位，並從中解析出 JWT Token，
+ * 接著驗證該 Token 的有效性。驗證成功後，會從請求主體中解析出待刪除錢包的 ID，
+ * 並使用該 ID 與使用者 uuid 至資料庫中查找並刪除對應的錢包資料。
+ *
+ * 若缺少必要欄位或刪除的錢包資料不存在，將分別回傳錯誤訊息與對應的 HTTP 400 或 404 狀態碼；
+ * 若刪除操作成功，則回傳成功訊息與 HTTP 200 狀態碼。
+ *
+ * @param request - Next.js 的 NextRequest 物件，包含請求資訊與資料。
+ * @returns 一個 Promise，解析後回傳包含操作結果的 NextResponse 物件。
+ *
+ * @throws 當授權驗證失敗、缺少必要欄位或刪除操作失敗時，將回傳相應的錯誤訊息與狀態碼。
+ */
 export async function DELETE(request: NextRequest) {
   const authHeader = request.headers.get("Authorization");
   if (!authHeader) {
