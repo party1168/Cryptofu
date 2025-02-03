@@ -2,12 +2,16 @@ import Wallet from "@/models/Wallet";
 import connectDB from "@/lib/db";
 import { WalletParams } from "@/lib/addWallet";
 
-const changeWallet = async (id: string, update: Partial<WalletParams>) => {
+const changeWallet = async (
+  { userId, id }: { userId: string; id: string },
+  update: Partial<WalletParams>
+) => {
   try {
     await connectDB();
     const updatedWallet = Wallet.findOneAndUpdate(
       {
         _id: id,
+        userId: userId,
       },
       {
         $set: update,
