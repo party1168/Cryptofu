@@ -1,11 +1,9 @@
 import { NextResponse, NextRequest } from "next/server";
 import { getBinanceSpot } from "@/lib/getBinanceSpot";
 import { verifyToken } from "@/lib/auth";
-import Exchange, { IExchange } from "@/models/Exchange";
+import Exchange from "@/models/Exchange";
 import { decryptAES } from "@/lib/rijindael";
-import User from "@/models/User";
 import connectDB from "@/lib/db";
-import { SpotBalance } from "@/lib/getBinanceSpot";
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get("Authorization");
   if (!authHeader) {

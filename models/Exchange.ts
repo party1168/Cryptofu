@@ -5,6 +5,7 @@ export interface IExchange extends Document {
   name: string;
   APIkey: string;
   APIsecret: string;
+  passphrase:string;
   createAt: Date;
 }
 
@@ -13,6 +14,7 @@ const ExchangeSchema: Schema = new Schema({
   name: { type: String, required: true },
   APIkey: { type: String, required: true },
   APIsecret: { type: String, required: true },
+  passphrase: { type: String, required: false },
   createAt: { type: Date, default: Date.now },
 });
 

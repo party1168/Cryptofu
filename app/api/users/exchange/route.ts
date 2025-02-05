@@ -110,7 +110,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const jwtData = await verifyToken(token);
     await connectDB();
     const data = await request.json();
-    const { name, APIkey, APIsecret } = data;
+    const { name, APIkey, APIsecret, passphrase } = data as {
+      name: string;
+      APIkey: string;
+      APIsecret: string;
+      passphrase?: string;
+    };
     if (!(name && APIkey && APIsecret)) {
       return NextResponse.json(
         {
@@ -129,6 +134,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       name,
       APIkey: encryptedAPIkey,
       APIsecret: encryptedAPIsecret,
+      ...(passphrase && { passphrase }),
       createAt: new Date(),
     };
     await addExchange(jwtData.uuid, exchange);

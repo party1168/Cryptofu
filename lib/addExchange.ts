@@ -7,6 +7,7 @@ export interface ExchangeParams {
   name: string;
   APIkey: string;
   APIsecret: string;
+  passphrase?: string;
   createAt: Date;
 }
 
@@ -18,7 +19,7 @@ const addExchange = async (uuid: string, exchange: ExchangeParams) => {
       throw new Error("User not found");
     }
     const newExchange = new Exchange(exchange);
-    newExchange.save();
+    await newExchange.save();
     return true;
   } catch (err) {
     throw err;
