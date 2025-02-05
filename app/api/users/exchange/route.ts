@@ -129,14 +129,19 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
     const encryptedAPIkey = encryptAES(APIkey);
     const encryptedAPIsecret = encryptAES(APIsecret);
+    let encryptedPassphrase: string | undefined;
+    if (passphrase) {
+      encryptedPassphrase = encryptAES(passphrase);
+    }
     const exchange = {
       userId: jwtData.uuid,
       name,
       APIkey: encryptedAPIkey,
       APIsecret: encryptedAPIsecret,
-      ...(passphrase && { passphrase }),
+      ...(encryptedPassphrase && { passphrase: encryptedPassphrase }),
       createAt: new Date(),
     };
+    console.log(exchange);
     await addExchange(jwtData.uuid, exchange);
     return NextResponse.json(
       {
