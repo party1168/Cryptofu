@@ -11,6 +11,7 @@ import {
   Spot,
 } from "@binance/connector-typescript";
 import { getCryptoPricesApi } from "./getCryptoPrice";
+import withRetry from "./withRetry";
 const BASE_URL = "https://api.binance.com";
 
 export interface SpotBalance {
@@ -74,14 +75,20 @@ export const getBinanceSpot = async (API_KEY: string, API_SECRET: string) => {
     const client = new Spot(API_KEY, API_SECRET, { baseURL: BASE_URL });
     const options = {
       recvWindow: 5000,
-      useServerTime:true
+      useServerTime: true,
     };
-    const [spot, funding, flexible, locked] = await Promise.all([
-      client.userAsset(options),
-      client.fundingWallet(options),
-      client.getFlexibleProductPosition(options),
-      client.getLockedProductPosition(options),
-    ]);
+    const result = await withRetry(() => {
+      return Promise.all([
+        client.userAsset(options),
+        client.fundingWallet(options),
+        client.getFlexibleProductPosition(options),
+        client.getLockedProductPosition(options),
+      ]);
+    });
+    if (!result) {
+      throw new Error("Failed to fetch balances.");
+    }
+    const [spot, funding, flexible, locked] = result;
     const allBalances = [
       ...(await convertSpotBalance(spot)),
       ...(await convertFundingBalance(funding)),
@@ -113,7 +120,10 @@ export const getBinanceSpot = async (API_KEY: string, API_SECRET: string) => {
       })
     );
     totalAssets.sort((a, b) => b.totalprice - a.totalprice);
-    return totalAssets;
+    return {
+      exchange: "Binance",
+      Assets: totalAssets,
+    };
   } catch (err) {
     throw err;
   }

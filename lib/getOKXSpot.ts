@@ -132,7 +132,10 @@ const getOkxSpot = async (
       })
     );
     spotwPrice.sort((a, b) => b.totalPrice - a.totalPrice);
-    return spotwPrice;
+    return {
+      exchange: "OKX",
+      Assets: spotwPrice,
+    };
   } catch (err) {
     if (err instanceof AxiosError) {
       throw new Error(JSON.stringify(err.response?.data || err.message));
