@@ -112,7 +112,27 @@ const getOkxSpot = async (
           amount: Number(bal.amount).toFixed(10),
         };
       });
-    return spot;
+    const spotwPrice = await Promise.all(
+      spot.map(async (item) => {
+        if (item.symbol === "USDT" || item.symbol === "USDC") {
+          return {
+            ...item,
+            price: 1,
+            totalPrice: Number(item.amount),
+          };
+        }
+        const path = `/api/v5/market/ticker?instId=${item.symbol}-USDT`;
+        const res = await makeRequest(path);
+        const price = res.data.data[0].last;
+        return {
+          ...item,
+          price: Number(price),
+          totalPrice: Number((Number(item.amount) * Number(price)).toFixed(2)),
+        };
+      })
+    );
+    spotwPrice.sort((a, b) => b.totalPrice - a.totalPrice);
+    return spotwPrice;
   } catch (err) {
     if (err instanceof AxiosError) {
       throw new Error(JSON.stringify(err.response?.data || err.message));
