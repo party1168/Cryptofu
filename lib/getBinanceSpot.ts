@@ -15,7 +15,7 @@ import withRetry from "./withRetry";
 const BASE_URL = "https://api.binance.com";
 
 export interface SpotBalance {
-  asset: string;
+  symbol: string;
   amount: string;
   price: number;
   totalprice: number;
@@ -107,22 +107,26 @@ export const getBinanceSpot = async (API_KEY: string, API_SECRET: string) => {
       }
       return acc;
     }, [] as AssetBalance[]);
+    let totalBalance = 0;
     const totalAssets = await Promise.all<SpotBalance>(
       totalBalances.map(async (asset) => {
         const price = await getCryptoPricesApi(asset.asset);
         const totalprice = Number(asset.amount) * Number(price);
+        totalBalance += totalprice;
         return {
-          asset: asset.asset,
+          symbol: asset.asset,
           amount: asset.amount,
           price: price,
-          totalprice: totalprice,
+          totalprice: Number(totalprice.toFixed(2)),
         };
       })
     );
     totalAssets.sort((a, b) => b.totalprice - a.totalprice);
+    totalBalance = Number(totalBalance.toFixed(2));
     return {
       exchange: "Binance",
-      Assets: totalAssets,
+      assets: totalAssets,
+      totalBalance
     };
   } catch (err) {
     throw err;

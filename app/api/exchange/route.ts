@@ -6,6 +6,13 @@ import { decryptAES } from "@/lib/rijindael";
 import getOkxSpot from "@/lib/getOkxSpot";
 import { ExchangeParams } from "@/lib/addExchange";
 import { getBinanceSpot } from "@/lib/getBinanceSpot";
+import { SpotBalance } from "@/lib/getBinanceSpot";
+
+interface exchangeResponse {
+  exchange: string;
+  assets: SpotBalance[];
+  totalBalance: number;
+}
 
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get("Authorization");
@@ -39,36 +46,55 @@ export async function GET(request: NextRequest) {
       );
     }
     const spotData = await Promise.all(
-      userExchange.map((exchange: ExchangeParams) => {
+      userExchange.map(async (exchange: ExchangeParams) => {
+        let spot: exchangeResponse;
         if (exchange.name === "OKX") {
           if (!exchange.passphrase) {
-            return NextResponse.json(
-              {
-                success: false,
-                message: "Passphrase is required",
-              },
-              {
-                status: 401,
-              }
-            );
+            throw new Error("Passphrase is required for OKX");
           }
-          return getOkxSpot(
+          spot = await getOkxSpot(
             decryptAES(exchange.APIkey),
             decryptAES(exchange.APIsecret),
             decryptAES(exchange.passphrase)
           );
         } else if (exchange.name === "Binance") {
-          return getBinanceSpot(
+          spot = await getBinanceSpot(
             decryptAES(exchange.APIkey),
             decryptAES(exchange.APIsecret)
           );
+        }else{
+            spot = {
+                exchange: exchange.name,
+                assets: [],
+                totalBalance: 0
+            }
         }
+        if (!spot) {
+            throw new Error("Failed to fetch balances");
+        }
+        return spot;
       })
     );
+    if (!spotData) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Failed to fetch balances",
+        },
+        {
+          status: 500,
+        }
+      );
+    }
+
+    const spotwTotal = spotData.reduce(
+      (sum, spot) => sum + spot.totalBalance,
+      0
+    ).toFixed(2);
     return NextResponse.json(
       {
         success: true,
-        data: spotData,
+        data: {spotData, totalBalance: Number(spotwTotal)},
       },
       {
         status: 200,

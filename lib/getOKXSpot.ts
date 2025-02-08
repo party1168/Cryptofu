@@ -1,5 +1,6 @@
 import axios, { AxiosError } from "axios";
 import crypto from "crypto";
+import { SpotBalance } from "./getBinanceSpot";
 
 const baseURL = "https://www.okx.com";
 
@@ -112,29 +113,34 @@ const getOkxSpot = async (
           amount: Number(bal.amount).toFixed(10),
         };
       });
-    const spotwPrice = await Promise.all(
+    let totalBalance = 0;
+    const spotwPrice: SpotBalance[] = await Promise.all(
       spot.map(async (item) => {
         if (item.symbol === "USDT" || item.symbol === "USDC") {
           return {
             ...item,
             price: 1,
-            totalPrice: Number(item.amount),
+            totalprice: Number(Number(item.amount).toFixed(2)),
           };
         }
         const path = `/api/v5/market/ticker?instId=${item.symbol}-USDT`;
         const res = await makeRequest(path);
         const price = res.data.data[0].last;
+        const totalprice = Number(item.amount) * Number(price);
+        totalBalance += totalprice;
         return {
           ...item,
           price: Number(price),
-          totalPrice: Number((Number(item.amount) * Number(price)).toFixed(2)),
+          totalprice: Number(totalprice.toFixed(2)),
         };
       })
     );
-    spotwPrice.sort((a, b) => b.totalPrice - a.totalPrice);
+    spotwPrice.sort((a, b) => b.totalprice - a.totalprice);
+    totalBalance = Number(totalBalance.toFixed(2));
     return {
       exchange: "OKX",
-      Assets: spotwPrice,
+      assets: spotwPrice,
+      totalBalance,
     };
   } catch (err) {
     if (err instanceof AxiosError) {
