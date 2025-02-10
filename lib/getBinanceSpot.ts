@@ -73,9 +73,10 @@ const convertLockedBalance = async (
 export const getBinanceSpot = async (API_KEY: string, API_SECRET: string) => {
   try {
     const client = new Spot(API_KEY, API_SECRET, { baseURL: BASE_URL });
+    const serverTime = await client.checkServerTime();
     const options = {
       recvWindow: 5000,
-      useServerTime: true,
+      timestamp: serverTime.serverTime,
     };
     const result = await withRetry(() => {
       return Promise.all([

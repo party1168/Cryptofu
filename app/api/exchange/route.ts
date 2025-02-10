@@ -7,6 +7,7 @@ import getOkxSpot from "@/lib/getOkxSpot";
 import { ExchangeParams } from "@/lib/addExchange";
 import { getBinanceSpot } from "@/lib/getBinanceSpot";
 import { SpotBalance } from "@/lib/getBinanceSpot";
+import redis from "@/lib/redis";
 
 interface exchangeResponse {
   exchange: string;
@@ -45,6 +46,18 @@ export async function GET(request: NextRequest) {
         }
       );
     }
+    const existingData = await redis.get(jwtData.uuid);
+    if (existingData) {
+      return NextResponse.json(
+        {
+          success: true,
+          data: JSON.parse(existingData),
+        },
+        {
+          status: 200,
+        }
+      );
+    }
     const spotData = await Promise.all(
       userExchange.map(async (exchange: ExchangeParams) => {
         let spot: exchangeResponse;
@@ -62,15 +75,15 @@ export async function GET(request: NextRequest) {
             decryptAES(exchange.APIkey),
             decryptAES(exchange.APIsecret)
           );
-        }else{
-            spot = {
-                exchange: exchange.name,
-                assets: [],
-                totalBalance: 0
-            }
+        } else {
+          spot = {
+            exchange: exchange.name,
+            assets: [],
+            totalBalance: 0,
+          };
         }
         if (!spot) {
-            throw new Error("Failed to fetch balances");
+          throw new Error("Failed to fetch balances");
         }
         return spot;
       })
@@ -87,14 +100,23 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const spotwTotal = spotData.reduce(
-      (sum, spot) => sum + spot.totalBalance,
-      0
-    ).toFixed(2);
+    const spotwTotal = spotData
+      .reduce((sum, spot) => sum + spot.totalBalance, 0)
+      .toFixed(2);
+    const data = {
+      spotData,
+      totalBalance: Number(spotwTotal),
+    };
+    await redis.set(
+      `${jwtData.uuid}@exchange`,
+      JSON.stringify(data),
+      "EX",
+      300
+    );
     return NextResponse.json(
       {
         success: true,
-        data: {spotData, totalBalance: Number(spotwTotal)},
+        data: { spotData, totalBalance: Number(spotwTotal) },
       },
       {
         status: 200,
