@@ -70,7 +70,7 @@ const convertLockedBalance = async (
   });
 };
 
-export const getBinanceSpot = async (API_KEY: string, API_SECRET: string) => {
+const getBinanceSpot = async (API_KEY: string, API_SECRET: string) => {
   try {
     const client = new Spot(API_KEY, API_SECRET, { baseURL: BASE_URL });
     const serverTime = await client.checkServerTime();
@@ -133,3 +133,5 @@ export const getBinanceSpot = async (API_KEY: string, API_SECRET: string) => {
     throw err;
   }
 };
+
+export default getBinanceSpot;

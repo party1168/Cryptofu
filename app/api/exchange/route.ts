@@ -2,18 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/db";
 import Exchange from "@/models/Exchange";
 import { verifyToken } from "@/lib/auth";
-import { decryptAES } from "@/lib/rijindael";
-import getOkxSpot from "@/lib/getOkxSpot";
-import { ExchangeParams } from "@/lib/addExchange";
-import { getBinanceSpot } from "@/lib/getBinanceSpot";
-import { SpotBalance } from "@/lib/getBinanceSpot";
 import redis from "@/lib/redis";
-
-interface exchangeResponse {
-  exchange: string;
-  assets: SpotBalance[];
-  totalBalance: number;
-}
+import getAllSpot from "@/lib/getAllSpot";
 
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get("Authorization");
@@ -58,65 +48,12 @@ export async function GET(request: NextRequest) {
         }
       );
     }
-    const spotData = await Promise.all(
-      userExchange.map(async (exchange: ExchangeParams) => {
-        let spot: exchangeResponse;
-        if (exchange.name === "OKX") {
-          if (!exchange.passphrase) {
-            throw new Error("Passphrase is required for OKX");
-          }
-          spot = await getOkxSpot(
-            decryptAES(exchange.APIkey),
-            decryptAES(exchange.APIsecret),
-            decryptAES(exchange.passphrase)
-          );
-        } else if (exchange.name === "Binance") {
-          spot = await getBinanceSpot(
-            decryptAES(exchange.APIkey),
-            decryptAES(exchange.APIsecret)
-          );
-        } else {
-          spot = {
-            exchange: exchange.name,
-            assets: [],
-            totalBalance: 0,
-          };
-        }
-        if (!spot) {
-          throw new Error("Failed to fetch balances");
-        }
-        return spot;
-      })
-    );
-    if (!spotData) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Failed to fetch balances",
-        },
-        {
-          status: 500,
-        }
-      );
-    }
-
-    const spotwTotal = spotData
-      .reduce((sum, spot) => sum + spot.totalBalance, 0)
-      .toFixed(2);
-    const data = {
-      spotData,
-      totalBalance: Number(spotwTotal),
-    };
-    await redis.set(
-      `${jwtData.uuid}@exchange`,
-      JSON.stringify(data),
-      "EX",
-      300
-    );
+    const data = await getAllSpot(userExchange);
+    await redis.set(jwtData.uuid, JSON.stringify(data), "EX", 60);
     return NextResponse.json(
       {
         success: true,
-        data: { spotData, totalBalance: Number(spotwTotal) },
+        data,
       },
       {
         status: 200,

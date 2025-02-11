@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
-import { getBinanceSpot } from "@/lib/getBinanceSpot";
+import getBinanceSpot from "@/lib/getBinanceSpot";
 import { verifyToken } from "@/lib/auth";
 import Exchange from "@/models/Exchange";
 import { decryptAES } from "@/lib/rijindael";
