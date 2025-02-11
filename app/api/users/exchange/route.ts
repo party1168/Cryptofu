@@ -141,7 +141,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       ...(encryptedPassphrase && { passphrase: encryptedPassphrase }),
       createAt: new Date(),
     };
-    console.log(exchange);
     await addExchange(jwtData.uuid, exchange);
     return NextResponse.json(
       {
