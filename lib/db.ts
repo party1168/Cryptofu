@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import User from "@/models/User";
+import Exchange from "@/models/Exchange";
 let isConnect = false;
 
 const dbURL = process.env.MONGODB_URI;
@@ -34,6 +35,7 @@ const connectDB = async () => {
     }
     await mongoose.connect(dbURL);
     await User.createIndexes();
+    await Exchange.createIndexes();
     isConnect = true;
     return mongoose.connection;
   } catch (err) {

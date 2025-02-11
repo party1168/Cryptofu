@@ -18,6 +18,8 @@ const ExchangeSchema: Schema = new Schema({
   createAt: { type: Date, default: Date.now },
 });
 
+ExchangeSchema.index({ userId: 1, name: 1 }, { unique: true });
+
 const Exchange =
   mongoose.models.Exchange ||
   mongoose.model<IExchange>("Exchange", ExchangeSchema);
