@@ -1,4 +1,4 @@
-import { getWalletBalances } from "@/lib/api/getWalletBalances";
+import getAllWalletBalances from "@/lib/api/getAllWalletBalances";
 import connectDB from "@/lib/database/db";
 import Wallet from "@/models/Wallet";
 import { verifyToken } from "@/lib/utils/auth";
@@ -35,23 +35,8 @@ export async function GET(request: NextRequest) {
   try {
     await connectDB();
     const jwtData = await verifyToken(token);
-    const address = request.nextUrl.searchParams.get("address");
-    if (!address) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Address is required",
-        },
-        {
-          status: 400,
-        }
-      );
-    }
-    const wallet = await Wallet.findOne({
-      userId: jwtData.uuid,
-      address: address,
-    });
-    if (!wallet) {
+    const wallets = await Wallet.find({ userId: jwtData.uuid });
+    if (!wallets) {
       return NextResponse.json(
         {
           success: false,
@@ -62,12 +47,12 @@ export async function GET(request: NextRequest) {
         }
       );
     }
-    const balances = await getWalletBalances(address);
+    const balances = await getAllWalletBalances(wallets);
     if (!balances) {
       return NextResponse.json(
         {
           success: false,
-          message: "No balances found",
+          message: "No balance found",
         },
         {
           status: 404,
