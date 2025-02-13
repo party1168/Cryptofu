@@ -18,6 +18,13 @@ const addWallet = async (uuid: string, wallet: WalletParams) => {
     if (!user) {
       throw new Error("User not found");
     }
+    const walletExists = await Wallet.findOne({
+      userId: uuid,
+      address: wallet.address,
+    });
+    if (walletExists) {
+      throw new Error("Wallet already exists");
+    }
     const newWallet = new Wallet(wallet);
     await newWallet.save();
     return true;
