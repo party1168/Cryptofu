@@ -1,6 +1,7 @@
 import { ExchangeParams } from "./addExchange";
 import getBinanceSpot, { SpotBalance } from "./getBinanceSpot";
 import getOkxSpot from "./getOkxSpot";
+import getMaxSpot from "./getMaxSpot";
 import { decryptAES } from "@/lib/utils/rijindael";
 interface exchangeResponse {
   exchange: string;
@@ -11,6 +12,7 @@ const getAllSpot = async (exchanges: ExchangeParams[]) => {
   const spotData = await Promise.all(
     exchanges.map(async (exchange: ExchangeParams) => {
       let spot: exchangeResponse;
+      console.log(exchange.name);
       switch (exchange.name) {
         case "OKX":
           if (!exchange.passphrase) {
@@ -24,6 +26,12 @@ const getAllSpot = async (exchanges: ExchangeParams[]) => {
           break;
         case "Binance":
           spot = await getBinanceSpot(
+            decryptAES(exchange.APIkey),
+            decryptAES(exchange.APIsecret)
+          );
+          break;
+        case "Max":
+          spot = await getMaxSpot(
             decryptAES(exchange.APIkey),
             decryptAES(exchange.APIsecret)
           );
