@@ -14,21 +14,32 @@ const getAllWalletBalances = async (wallets: WalletParams[]) => {
         const cachedKey = `wallet_address:${wallet.address}`;
         const cachedBalances = await redis.get(cachedKey);
         if (cachedBalances) {
-          return JSON.parse(cachedBalances);
+          return {
+            wallet_label: wallet.label,
+            wallet_balances: JSON.parse(cachedBalances),
+          };
         }
         const walletBalances = await provider.getAccountBalance({
           walletAddress: wallet.address,
         });
-        await redis.set(
-          cachedKey,
-          JSON.stringify(walletBalances.assets),
-          "EX",
-          3600
-        );
-        return {
+        const balances = walletBalances.assets.map((asset) => {
+          return {
+            symbol: asset.tokenSymbol,
+            amount: asset.balance,
+            price: Number(Number(asset.tokenPrice).toFixed(2)),
+            totalprice: Number(Number(asset.balanceUsd).toFixed(2)),
+          };
+        });
+        const totalBalance = balances.reduce((acc, curr) => {
+          return acc + curr.totalprice;
+        }, 0);
+        const walletData = {
           wallet_label: wallet.label,
-          wallet_balances: walletBalances.assets,
+          wallet_balances: balances,
+          wallet_total_balance: totalBalance,
         };
+        await redis.set(cachedKey, JSON.stringify(walletData), "EX", 60);
+        return walletData;
       })
     );
     return balances;

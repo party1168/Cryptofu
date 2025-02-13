@@ -12,7 +12,6 @@ const getAllSpot = async (exchanges: ExchangeParams[]) => {
   const spotData = await Promise.all(
     exchanges.map(async (exchange: ExchangeParams) => {
       let spot: exchangeResponse;
-      console.log(exchange.name);
       switch (exchange.name) {
         case "OKX":
           if (!exchange.passphrase) {
@@ -53,16 +52,7 @@ const getAllSpot = async (exchanges: ExchangeParams[]) => {
   if (!spotData) {
     throw new Error("Failed to fetch balances");
   }
-  const spotwTotal = spotData
-    .reduce((sum, spot) => {
-      return sum + spot.totalBalance;
-    }, 0)
-    .toFixed(2);
-  const data = {
-    spotData,
-    totalBalance: Number(spotwTotal),
-  };
-  return data;
+  return spotData;
 };
 
 export default getAllSpot;
