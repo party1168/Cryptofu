@@ -40,14 +40,30 @@ export async function GET(request: NextRequest) {
     const exchanges = await Exchange.find({ userId: jwtData.uuid });
     const walletBalances = await getAllWalletBalances(wallets);
     const exchangeBalances = await getAllSpot(exchanges);
-    const balances = {
+    const walletValue = Number(
+      walletBalances
+        .reduce((acc, curr) => {
+          return acc + curr.totalBalance;
+        }, 0)
+        .toFixed(2)
+    );
+    const exchangeValue = Number(
+      exchangeBalances
+        .reduce((acc, curr) => {
+          return acc + curr.totalBalance;
+        }, 0)
+        .toFixed(2)
+    );
+    const portfolioBalance = walletValue + exchangeValue;
+    const portfolio = {
       walletBalances,
       exchangeBalances,
+      portfolioBalance,
     };
     return NextResponse.json(
       {
         success: true,
-        data: balances,
+        data: portfolio,
       },
       {
         status: 200,

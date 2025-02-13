@@ -15,16 +15,20 @@ const getMaxSpot = async (APIkey: string, APIsecret: string) => {
   );
   const spotwprice: SpotBalance[] = await Promise.all(
     spotp.map(async (asset) => {
-      if (
-        asset.currency === "twd" ||
-        asset.currency === "usdt" ||
-        asset.currency === "usdc"
-      ) {
+      if (asset.currency === "twd") {
+        return {
+          symbol: asset.currency,
+          amount: asset.balance.toString(),
+          price: 0.3,
+          totalprice: Number(asset.balance.times(0.3).toFixed(3)),
+        };
+      }
+      if (asset.currency === "usdt" || asset.currency === "usdc") {
         return {
           symbol: asset.currency,
           amount: asset.balance.toString(),
           price: 1,
-          totalprice: Number(asset.balance.toFixed(2)),
+          totalprice: Number(asset.balance.toFixed(3)),
         };
       }
       const pricekey = `${asset.currency}usdt`;
@@ -40,8 +44,8 @@ const getMaxSpot = async (APIkey: string, APIsecret: string) => {
       return {
         symbol: asset.currency,
         amount: asset.balance.toString(),
-        price: Number(price.toFixed(2)),
-        totalprice: Number(asset.balance.times(price).toFixed(2)),
+        price: Number(price.toFixed(3)),
+        totalprice: Number(asset.balance.times(price).toFixed(3)),
       };
     })
   );

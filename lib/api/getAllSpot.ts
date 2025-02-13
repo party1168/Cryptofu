@@ -3,6 +3,7 @@ import getBinanceSpot, { SpotBalance } from "./getBinanceSpot";
 import getOkxSpot from "./getOkxSpot";
 import getMaxSpot from "./getMaxSpot";
 import { decryptAES } from "@/lib/utils/rijindael";
+import redis from "../database/redis";
 interface exchangeResponse {
   label: string;
   assets: SpotBalance[];
@@ -12,6 +13,11 @@ const getAllSpot = async (exchanges: ExchangeParams[]) => {
   const spotData = await Promise.all(
     exchanges.map(async (exchange: ExchangeParams) => {
       let spot: exchangeResponse;
+      const cachedKey = `spot:${exchange.userId}:${exchange.name}`;
+      const existingSpotData = await redis.get(cachedKey);
+      if (existingSpotData) {
+        return JSON.parse(existingSpotData);
+      }
       switch (exchange.name) {
         case "OKX":
           if (!exchange.passphrase) {
@@ -46,6 +52,7 @@ const getAllSpot = async (exchanges: ExchangeParams[]) => {
       if (!spot) {
         throw new Error("Failed to fetch balances");
       }
+      await redis.set(cachedKey, JSON.stringify(spot), "EX", 60);
       return spot;
     })
   );

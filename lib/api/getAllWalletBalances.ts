@@ -22,9 +22,10 @@ const getAllWalletBalances = async (wallets: WalletParams[]) => {
         const balances = walletBalances.assets.map((asset) => {
           return {
             symbol: asset.tokenSymbol,
+            network: asset.blockchain,
             amount: asset.balance,
-            price: Number(Number(asset.tokenPrice).toFixed(2)),
-            totalprice: Number(Number(asset.balanceUsd).toFixed(2)),
+            price: Number(Number(asset.tokenPrice).toFixed(3)),
+            totalprice: Number(Number(asset.balanceUsd).toFixed(3)),
           };
         });
         const totalBalance = balances.reduce((acc, curr) => {
@@ -33,7 +34,7 @@ const getAllWalletBalances = async (wallets: WalletParams[]) => {
         const walletData = {
           label: wallet.label,
           assets: balances,
-          totalBalance: Number(totalBalance.toFixed(2)),
+          totalBalance: Number(totalBalance.toFixed(3)),
         };
         await redis.set(cachedKey, JSON.stringify(walletData), "EX", 60);
         return walletData;

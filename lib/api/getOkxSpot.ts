@@ -120,7 +120,7 @@ const getOkxSpot = async (
           return {
             ...item,
             price: 1,
-            totalprice: Number(Number(item.amount).toFixed(2)),
+            totalprice: Number(Number(item.amount).toFixed(3)),
           };
         }
         const path = `/api/v5/market/ticker?instId=${item.symbol}-USDT`;
@@ -131,12 +131,12 @@ const getOkxSpot = async (
         return {
           ...item,
           price: Number(price),
-          totalprice: Number(totalprice.toFixed(2)),
+          totalprice: Number(totalprice.toFixed(3)),
         };
       })
     );
     spotwPrice.sort((a, b) => b.totalprice - a.totalprice);
-    totalBalance = Number(totalBalance.toFixed(2));
+    totalBalance = Number(totalBalance.toFixed(3));
     return {
       label: "OKX",
       assets: spotwPrice,
