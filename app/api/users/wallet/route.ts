@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import Wallet from "@/models/Wallet";
-import { verifyToken } from "@/lib/auth";
-import connectDB from "@/lib/db";
-import addWallet from "@/lib/addWallet";
-import changeWallet from "@/lib/changeWallet";
+import { verifyToken } from "@/lib/utils/auth";
+import connectDB from "@/lib/database/db";
+import addWallet from "@/lib/api/addWallet";
+import changeWallet from "@/lib/api/changeWallet";
 /**
  * 處理 GET 請求以取得使用者的錢包資料。
  *

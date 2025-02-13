@@ -1,6 +1,6 @@
 import Exchange from "@/models/Exchange";
-import connectDB from "@/lib/db";
-import { ExchangeParams } from "@/lib/addExchange";
+import connectDB from "@/lib/database/db";
+import { ExchangeParams } from "@/lib/api/addExchange";
 
 const changeExchange = async (id: string, update: Partial<ExchangeParams>) => {
   try {

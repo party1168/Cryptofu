@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import redis from "./redis";
+import redis from "@/lib/database/redis";
 
 const secret = process.env.JWT_SECRET || "0.";
 

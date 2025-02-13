@@ -1,8 +1,8 @@
 import User from "@/models/User";
 import bcrypt from "bcrypt";
-import connectDB from "@/lib/db";
+import connectDB from "@/lib/database/db";
 import { NextRequest, NextResponse } from "next/server";
-import { verifyToken } from "@/lib/auth";
+import { verifyToken } from "@/lib/utils/auth";
 /**
  * 處理用戶登入請求的 POST 方法。
  *

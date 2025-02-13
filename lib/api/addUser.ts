@@ -1,5 +1,5 @@
 import User from "@/models/User";
-import connectDB from "./db";
+import connectDB from "@/lib/database/db";
 import validator from "validator";
 import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcrypt";

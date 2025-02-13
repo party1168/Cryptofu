@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyToken } from "@/lib/auth";
-import { decryptAES } from "@/lib/rijindael";
+import { verifyToken } from "@/lib/utils/auth";
+import { decryptAES } from "@/lib/utils/rijindael";
 import Exchange from "@/models/Exchange";
-import getExchangeMaxTransaction from "@/lib/getMaxTransaction";
+import getExchangeMaxTransaction from "@/lib/api/getMaxTransaction";
 
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get("Authorization");

@@ -1,5 +1,5 @@
 import Wallet from "@/models/Wallet";
-import connectDB from "@/lib/db";
+import connectDB from "@/lib/database/db";
 import User from "@/models/User";
 
 export interface WalletParams {

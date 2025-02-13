@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import connectDB from "@/lib/db";
-import addUser from "@/lib/addUser";
+import connectDB from "@/lib/database/db";
+import addUser from "@/lib/api/addUser";
 /**
  * 處理用戶註冊的 POST 請求。
  *

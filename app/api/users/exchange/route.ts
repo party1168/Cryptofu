@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import connectDB from "@/lib/db";
-import addExchange from "@/lib/addExchange";
-import { encryptAES } from "@/lib/rijindael";
-import { verifyToken } from "@/lib/auth";
+import connectDB from "@/lib/database/db";
+import addExchange from "@/lib/api/addExchange";
+import { encryptAES } from "@/lib/utils/rijindael";
+import { verifyToken } from "@/lib/utils/auth";
 import Exchange from "@/models/Exchange";
 
 /**

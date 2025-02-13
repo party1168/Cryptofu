@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import connectDB from "@/lib/db";
+import connectDB from "@/lib/database/db";
 import Exchange from "@/models/Exchange";
-import { verifyToken } from "@/lib/auth";
-import redis from "@/lib/redis";
-import getAllSpot from "@/lib/getAllSpot";
+import { verifyToken } from "@/lib/utils/auth";
+import redis from "@/lib/database/redis";
+import getAllSpot from "@/lib/api/getAllSpot";
 
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get("Authorization");

@@ -1,5 +1,5 @@
 import Exchange from "@/models/Exchange";
-import connectDB from "@/lib/db";
+import connectDB from "@/lib/database/db";
 import User from "@/models/User";
 
 export interface ExchangeParams {

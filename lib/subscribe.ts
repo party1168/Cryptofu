@@ -1,6 +1,6 @@
 import Subscriber from "@/models/Subscriber";
 import validator from "validator";
-import connectDB from "./db";
+import connectDB from "./database/db";
 
 const addSubscriber = async (email: string): Promise<void> => {
   try {

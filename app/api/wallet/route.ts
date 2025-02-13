@@ -1,7 +1,7 @@
-import { getWalletBalances } from "@/lib/getWalletBalances";
-import connectDB from "@/lib/db";
+import { getWalletBalances } from "@/lib/api/getWalletBalances";
+import connectDB from "@/lib/database/db";
 import Wallet from "@/models/Wallet";
-import { verifyToken } from "@/lib/auth";
+import { verifyToken } from "@/lib/utils/auth";
 import { NextRequest, NextResponse } from "next/server";
 /**
  * 處理 GET 請求以取得指定地址的錢包餘額。

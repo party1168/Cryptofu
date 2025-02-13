@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import User from "@/models/User";
-import { verifyToken } from "@/lib/auth";
-import connectDB from "@/lib/db";
+import { verifyToken } from "@/lib/utils/auth";
+import connectDB from "@/lib/database/db";
 /**
  * @function GET
  * @description

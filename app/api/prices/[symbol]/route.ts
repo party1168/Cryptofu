@@ -1,6 +1,6 @@
-import { getCryptoPricesApi } from "@//lib/getCryptoPrice";
+import { getCryptoPricesApi } from "@/lib/api/getCryptoPrice";
 import { NextRequest, NextResponse } from "next/server";
-import { verifyToken } from "@//lib/auth";
+import { verifyToken } from "@/lib/utils/auth";
 /**
  * 處理 GET 請求以獲取加密貨幣價格。
  *

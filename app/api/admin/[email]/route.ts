@@ -6,8 +6,8 @@
  */
 import { NextRequest, NextResponse } from "next/server";
 import User from "@/models/User";
-import connectDB from "@/lib/db";
-import { verifyToken } from "@/lib/auth";
+import connectDB from "@/lib/database/db";
+import { verifyToken } from "@/lib/utils/auth";
 
 /**
  * 修改用戶資料

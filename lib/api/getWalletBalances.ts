@@ -1,5 +1,5 @@
 import { AnkrProvider } from "@ankr.com/ankr.js";
-import redis from "./redis";
+import redis from "@/lib/database/redis";
 
 const ANKR_API_KEY = process.env.ANKR_API_KEY || "";
 

@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import connectDB from "@/lib/db";
+import connectDB from "@/lib/database/db";
 import Exchange from "@/models/Exchange";
-import { verifyToken } from "@/lib/auth";
-import { decryptAES } from "@/lib/rijindael";
-import getOkxSpot from "@/lib/getOkxSpot";
+import { verifyToken } from "@/lib/utils/auth";
+import { decryptAES } from "@/lib/utils/rijindael";
+import getOkxSpot from "@/lib/api/getOkxSpot";
 
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get("Authorization");

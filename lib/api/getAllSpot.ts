@@ -1,8 +1,7 @@
 import { ExchangeParams } from "./addExchange";
-import getBinanceSpot from "./getBinanceSpot";
+import getBinanceSpot, { SpotBalance } from "./getBinanceSpot";
 import getOkxSpot from "./getOkxSpot";
-import { decryptAES } from "./rijindael";
-import { SpotBalance } from "./getBinanceSpot";
+import { decryptAES } from "@/lib/utils/rijindael";
 interface exchangeResponse {
   exchange: string;
   assets: SpotBalance[];
