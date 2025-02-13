@@ -4,7 +4,7 @@ import getOkxSpot from "./getOkxSpot";
 import getMaxSpot from "./getMaxSpot";
 import { decryptAES } from "@/lib/utils/rijindael";
 interface exchangeResponse {
-  exchange: string;
+  label: string;
   assets: SpotBalance[];
   totalBalance: number;
 }
@@ -37,7 +37,7 @@ const getAllSpot = async (exchanges: ExchangeParams[]) => {
           break;
         default:
           spot = {
-            exchange: exchange.name,
+            label: exchange.name,
             assets: [],
             totalBalance: 0,
           };

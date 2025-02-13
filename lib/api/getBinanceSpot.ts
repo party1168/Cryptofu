@@ -125,7 +125,7 @@ const getBinanceSpot = async (API_KEY: string, API_SECRET: string) => {
     totalAssets.sort((a, b) => b.totalprice - a.totalprice);
     totalBalance = Number(totalBalance.toFixed(2));
     return {
-      exchange: "Binance",
+      label: "Binance",
       assets: totalAssets,
       totalBalance
     };

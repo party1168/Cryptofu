@@ -138,7 +138,7 @@ const getOkxSpot = async (
     spotwPrice.sort((a, b) => b.totalprice - a.totalprice);
     totalBalance = Number(totalBalance.toFixed(2));
     return {
-      exchange: "OKX",
+      label: "OKX",
       assets: spotwPrice,
       totalBalance,
     };

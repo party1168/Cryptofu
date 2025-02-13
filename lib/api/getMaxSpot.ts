@@ -47,7 +47,7 @@ const getMaxSpot = async (APIkey: string, APIsecret: string) => {
   );
   const totalBalance = spotwprice.reduce((acc, cur) => acc + cur.totalprice, 0);
   return {
-    exchange: "Max",
+    label: "Max",
     assets: spotwprice,
     totalBalance,
   };

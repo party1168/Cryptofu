@@ -14,10 +14,7 @@ const getAllWalletBalances = async (wallets: WalletParams[]) => {
         const cachedKey = `wallet_address:${wallet.address}`;
         const cachedBalances = await redis.get(cachedKey);
         if (cachedBalances) {
-          return {
-            wallet_label: wallet.label,
-            wallet_balances: JSON.parse(cachedBalances),
-          };
+          return JSON.parse(cachedBalances);
         }
         const walletBalances = await provider.getAccountBalance({
           walletAddress: wallet.address,
@@ -34,9 +31,9 @@ const getAllWalletBalances = async (wallets: WalletParams[]) => {
           return acc + curr.totalprice;
         }, 0);
         const walletData = {
-          wallet_label: wallet.label,
-          wallet_balances: balances,
-          wallet_total_balance: totalBalance,
+          label: wallet.label,
+          assets: balances,
+          totalBalance: Number(totalBalance.toFixed(2)),
         };
         await redis.set(cachedKey, JSON.stringify(walletData), "EX", 60);
         return walletData;
