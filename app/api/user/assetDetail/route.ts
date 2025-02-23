@@ -2,7 +2,7 @@ import connectDB from "@/lib/database/db";
 import User from "@/models/User";
 import { NextRequest, NextResponse } from "next/server";
 import { verifyToken } from "@/lib/utils/auth";
-import getAllAssets from "@/lib/api/getAllAssetDetail";
+import { getAllAssetsDetail } from "@/lib/api/getAllAssets";
 
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get("Authorization");
@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const allAssets = await getAllAssets(jwtData.uuid);
+    const allAssets = await getAllAssetsDetail(jwtData.uuid);
 
     return NextResponse.json(
       {
