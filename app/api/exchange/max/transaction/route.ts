@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { decryptAES } from "@/lib/utils/rijindael";
 import Exchange from "@/models/Exchange";
-import getExchangeMaxHistory from "@/lib/api/getMaxHistory";
+import getExchangeMaxTransaction from "@/lib/api/getMaxTransaction";
 import { verifyToken } from "@/lib/utils/auth";
 
 export async function GET(request: NextRequest) {
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
     }
     const decryptedAPIkey = decryptAES(userExchange.APIkey);
     const decryptedAPIsecret = decryptAES(userExchange.APIsecret);
-    const data = await getExchangeMaxHistory(
+    const data = await getExchangeMaxTransaction(
       decryptedAPIkey,
       decryptedAPIsecret
     );

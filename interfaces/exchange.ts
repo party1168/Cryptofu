@@ -61,3 +61,38 @@ export interface OKXFinanceBalance {
   earnings: string;
   rate: string;
 }
+
+export interface OkxBillArchiveType {
+  bal: string;
+  balChg: string;
+  billId: string;
+  ccy: string;
+  clOrdId: string;
+  execType: string;
+  fee: string;
+  fillFwdPx: string;
+  fillIdxPx: string;
+  fillMarkPx: string;
+  fillMarkVol: string;
+  fillPxUsd: string;
+  fillPxVol: string;
+  fillTime: string;
+  from: string;
+  instId: string;
+  instType: string;
+  interest: string;
+  mgnMode: string;
+  notes: string;
+  ordId: string;
+  pnl: string;
+  posBal: string;
+  posBalChg: string;
+  px: string;
+  subType: string;
+  sz: string;
+  tag: string;
+  to: string;
+  tradeId: string;
+  ts: string;
+  type: string;
+}
