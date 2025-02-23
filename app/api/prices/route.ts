@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAllCryptoPricesApi } from "@/lib/api/getAllCrypto";
+import { getAllCryptoPricesApi } from "@/lib/api/getCryptoList";
 import { verifyToken } from "@/lib/utils/auth";
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get("Authorization");

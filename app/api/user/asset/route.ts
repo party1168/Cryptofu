@@ -1,11 +1,8 @@
-import getAllSpot from "@/lib/api/getAllSpot";
-import getAllWalletBalances from "@/lib/api/getAllWalletBalances";
 import connectDB from "@/lib/database/db";
 import User from "@/models/User";
 import { NextRequest, NextResponse } from "next/server";
 import { verifyToken } from "@/lib/utils/auth";
-import Wallet from "@/models/Wallet";
-import Exchange from "@/models/Exchange";
+import getAllAssets from "@/lib/api/getAllAssets";
 
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get("Authorization");
@@ -36,34 +33,13 @@ export async function GET(request: NextRequest) {
         }
       );
     }
-    const wallets = await Wallet.find({ userId: jwtData.uuid });
-    const exchanges = await Exchange.find({ userId: jwtData.uuid });
-    const walletBalances = await getAllWalletBalances(wallets);
-    const exchangeBalances = await getAllSpot(exchanges);
-    const walletValue = Number(
-      walletBalances
-        .reduce((acc, curr) => {
-          return acc + curr.totalBalance;
-        }, 0)
-        .toFixed(2)
-    );
-    const exchangeValue = Number(
-      exchangeBalances
-        .reduce((acc, curr) => {
-          return acc + curr.totalBalance;
-        }, 0)
-        .toFixed(2)
-    );
-    const portfolioBalance = walletValue + exchangeValue;
-    const portfolio = {
-      walletBalances,
-      exchangeBalances,
-      portfolioBalance,
-    };
+
+    const allAssets = await getAllAssets(jwtData.uuid);
+
     return NextResponse.json(
       {
         success: true,
-        data: portfolio,
+        data: allAssets,
       },
       {
         status: 200,
