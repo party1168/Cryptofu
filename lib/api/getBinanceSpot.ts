@@ -10,21 +10,10 @@ import {
   RestSimpleEarnTypes,
   Spot,
 } from "@binance/connector-typescript";
+import { AssetBalance, SpotBalance } from "@/interfaces/exchange";
 import { getCryptoPricesApi } from "./getCryptoPrice";
 import withRetry from "./withRetry";
 const BASE_URL = "https://api.binance.com";
-
-export interface SpotBalance {
-  symbol: string;
-  amount: string;
-  price: number;
-  totalprice: number;
-}
-
-interface AssetBalance {
-  asset: string;
-  amount: string;
-}
 
 const convertSpotBalance = async (
   asset: RestWalletTypes.userAssetResponse[]
@@ -127,7 +116,7 @@ const getBinanceSpot = async (API_KEY: string, API_SECRET: string) => {
     return {
       label: "Binance",
       assets: totalAssets,
-      totalBalance
+      totalBalance,
     };
   } catch (err) {
     throw err;

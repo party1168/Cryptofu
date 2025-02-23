@@ -1,15 +1,7 @@
 import Wallet from "@/models/Wallet";
 import connectDB from "@/lib/database/db";
 import User from "@/models/User";
-
-export interface WalletParams {
-  userId: string;
-  label: string;
-  address: string;
-  blockchain: string;
-  type: string;
-  createAt: Date;
-}
+import { WalletParams } from "@/interfaces/wallet";
 
 const addWallet = async (uuid: string, wallet: WalletParams) => {
   try {

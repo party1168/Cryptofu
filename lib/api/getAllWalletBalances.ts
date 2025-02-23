@@ -1,6 +1,6 @@
 import { AnkrProvider } from "@ankr.com/ankr.js";
 import redis from "@/lib/database/redis";
-import { WalletParams } from "./addWallet";
+import { WalletParams } from "@/interfaces/wallet";
 
 const ANKR_API_KEY = process.env.ANKR_API_KEY || "";
 

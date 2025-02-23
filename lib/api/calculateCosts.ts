@@ -1,11 +1,5 @@
 import { RawAccountTrade } from "binance";
-
-interface CostResult {
-  symbol: string;
-  totalCost: number;
-  totalQuantity: number;
-  averageCost: number;
-}
+import { CostResult } from "@/interfaces/utils";
 const quoteAssets = ["USDT", "USDC", "FDUSD", "PYUSD"];
 
 const calculateCosts = (transactions: RawAccountTrade[]) => {

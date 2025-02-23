@@ -1,34 +1,14 @@
 import axios, { AxiosError } from "axios";
 import crypto from "crypto";
-import { SpotBalance } from "./getBinanceSpot";
+import {
+  SpotBalance,
+  OKXAccountBalance,
+  OKXAssetBalance,
+  OKXFinanceBalance,
+  spotParams,
+} from "@/interfaces/exchange";
 
 const baseURL = "https://www.okx.com";
-
-interface spotParams {
-  symbol: string;
-  amount: string;
-}
-
-interface OKXAssetBalance {
-  ccy: string; // currency
-  bal: string; // balance
-  frozenBal: string;
-  availBal: string;
-}
-
-interface OKXAccountBalance {
-  ccy: string;
-  cashBal: string;
-  uTime: string;
-  isoEq: string;
-}
-
-interface OKXFinanceBalance {
-  ccy: string;
-  amt: string;
-  earnings: string;
-  rate: string;
-}
 
 const convertAssetBalance = async (balance: OKXAssetBalance[]) => {
   return balance.map((asset: OKXAssetBalance) => {

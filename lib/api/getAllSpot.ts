@@ -1,14 +1,10 @@
-import { ExchangeParams } from "./addExchange";
-import getBinanceSpot, { SpotBalance } from "./getBinanceSpot";
+import { ExchangeParams, exchangeResponse } from "@/interfaces/exchange";
+import getBinanceSpot from "./getBinanceSpot";
 import getOkxSpot from "./getOkxSpot";
 import getMaxSpot from "./getMaxSpot";
 import { decryptAES } from "@/lib/utils/rijindael";
 import redis from "../database/redis";
-interface exchangeResponse {
-  label: string;
-  assets: SpotBalance[];
-  totalBalance: number;
-}
+
 const getAllSpot = async (exchanges: ExchangeParams[]) => {
   const spotData = await Promise.all(
     exchanges.map(async (exchange: ExchangeParams) => {

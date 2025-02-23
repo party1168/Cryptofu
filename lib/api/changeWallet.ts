@@ -1,6 +1,6 @@
 import Wallet from "@/models/Wallet";
 import connectDB from "@/lib/database/db";
-import { WalletParams } from "@/lib/api/addWallet";
+import { WalletParams } from "@/interfaces/wallet";
 
 const changeWallet = async (
   { userId, id }: { userId: string; id: string },
