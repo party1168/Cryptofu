@@ -1,5 +1,5 @@
 import { MainClient } from "binance";
-import withRetry from "./withRetry";
+import withRetry from "../utils/withRetry";
 import getBinanceSpot from "./getBinanceSpot";
 import { TransactionRecords } from "@/interfaces/exchange";
 const getBinanceTransaction = async (

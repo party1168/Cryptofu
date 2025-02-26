@@ -4,6 +4,7 @@ import Exchange from "@/models/Exchange";
 import getBinanceTransaction from "@/lib/api/getBinanceTransaction";
 import connectDB from "@/lib/database/db";
 import { decryptAES } from "@/lib/utils/rijindael";
+import calculateCost from "@/lib/utils/calculateCost";
 
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get("Authorization");
@@ -41,10 +42,10 @@ export async function GET(request: NextRequest) {
       decryptAES(exchange.APIkey),
       decryptAES(exchange.APIsecret)
     );
-
+    const costResult = calculateCost(binanceTransaction);
     return NextResponse.json({
       success: true,
-      data: binanceTransaction,
+      data: costResult,
     });
   } catch (err) {
     if (err instanceof Error) {

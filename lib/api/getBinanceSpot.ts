@@ -12,7 +12,7 @@ import {
 } from "@binance/connector-typescript";
 import { AssetBalance, SpotBalance } from "@/interfaces/exchange";
 import { getCryptoPricesApi } from "./getCryptoPrice";
-import withRetry from "./withRetry";
+import withRetry from "../utils/withRetry";
 const BASE_URL = "https://api.binance.com";
 
 const convertSpotBalance = async (
