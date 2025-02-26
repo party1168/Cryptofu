@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import User from "@/models/User";
 import Exchange from "@/models/Exchange";
 import Wallet from "@/models/Wallet";
+import { ConnectOptions } from "mongoose";
 let isConnect = false;
 
 const dbURL = process.env.MONGODB_URI;
@@ -26,7 +27,7 @@ const dbURL = process.env.MONGODB_URI;
  * })();
  * ```
  */
-const connectDB = async () => {
+const connectDB = async (): Promise<mongoose.Connection> => {
   try {
     if (isConnect) {
       return mongoose.connection;
@@ -34,7 +35,20 @@ const connectDB = async () => {
     if (!dbURL) {
       throw new Error(`Losting environment variable MONGODB_URI ${dbURL}`);
     }
-    await mongoose.connect(dbURL);
+    const options: ConnectOptions = {
+      maxPoolSize: 10,
+      minPoolSize: 5,
+
+      serverSelectionTimeoutMS: 30000,
+      socketTimeoutMS: 45000,
+      connectTimeoutMS: 30000,
+
+      retryWrites: true,
+      retryReads: true,
+
+      heartbeatFrequencyMS: 10000,
+    };
+    await mongoose.connect(dbURL, options);
     await User.createIndexes();
     await Exchange.createIndexes();
     await Wallet.createIndexes();

@@ -7,7 +7,7 @@ const getOkxTransaction = async (
   APIkey: string,
   APIsecret: string,
   passphrase: string
-) => {
+): Promise<TransactionRecords[]> => {
   try {
     const client = new RestClient({
       apiKey: APIkey,
