@@ -1,10 +1,13 @@
 import { AnkrProvider } from "@ankr.com/ankr.js";
 import redis from "@/lib/database/redis";
-import { WalletParams } from "@/interfaces/wallet";
+import { BalanceResponse } from "@/interfaces/utils";
+import { WalletParams, WalletBalance } from "@/interfaces/wallet";
 
 const ANKR_API_KEY = process.env.ANKR_API_KEY || "";
 
-const getAllWalletBalances = async (wallets: WalletParams[]) => {
+const getAllWalletBalances = async (
+  wallets: WalletParams[]
+): Promise<BalanceResponse[]> => {
   try {
     const provider = new AnkrProvider(
       `https://rpc.ankr.com/multichain/${ANKR_API_KEY}`
@@ -19,10 +22,10 @@ const getAllWalletBalances = async (wallets: WalletParams[]) => {
         const walletBalances = await provider.getAccountBalance({
           walletAddress: wallet.address,
         });
-        const balances = walletBalances.assets.map((asset) => {
+        const balances: WalletBalance[] = walletBalances.assets.map((asset) => {
           return {
             symbol: asset.tokenSymbol,
-            network: asset.blockchain,
+            network: asset.blockchain.toString(),
             amount: asset.balance,
             price: Number(Number(asset.tokenPrice).toFixed(3)),
             totalprice: Number(Number(asset.balanceUsd).toFixed(3)),

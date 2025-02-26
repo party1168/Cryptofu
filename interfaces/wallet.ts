@@ -6,3 +6,10 @@ export interface WalletParams {
   type: string;
   createAt: Date;
 }
+export interface WalletBalance {
+  symbol: string;
+  network: string;
+  amount: string;
+  price: number;
+  totalprice: number;
+}

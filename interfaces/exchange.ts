@@ -20,11 +20,6 @@ export interface ExchangeParams {
   passphrase?: string;
   createAt: Date;
 }
-export interface exchangeResponse {
-  label: string;
-  assets: SpotBalance[];
-  totalBalance: number;
-}
 export interface SpotBalance {
   symbol: string;
   amount: string;

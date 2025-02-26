@@ -3,6 +3,9 @@ import getAllSpot from "./getAllSpot";
 import getAllWalletBalances from "./getAllWalletBalances";
 import Exchange from "@/models/Exchange";
 import Wallet from "@/models/Wallet";
+import { CombinedAsset } from "@/interfaces/utils";
+import getExchangeTransaction from "./getExchangeTransaction";
+import calculateCost from "../utils/calculateCost";
 
 const getAllAssets = async (uuid: string) => {
   try {
@@ -11,27 +14,70 @@ const getAllAssets = async (uuid: string) => {
     const exchanges = await Exchange.find({ userId: uuid });
     const walletBalances = await getAllWalletBalances(wallets);
     const exchangeBalances = await getAllSpot(exchanges);
-    const walletValue = Number(
-      walletBalances
-        .reduce((acc, curr) => {
-          return acc + curr.totalBalance;
-        }, 0)
-        .toFixed(2)
-    );
-    const exchangeValue = Number(
-      exchangeBalances
-        .reduce((acc, curr) => {
-          return acc + curr.totalBalance;
-        }, 0)
-        .toFixed(2)
-    );
-    const portfolioBalance = walletValue + exchangeValue;
-    const portfolio = {
-      walletBalances,
-      exchangeBalances,
-      portfolioBalance,
+    const combinedAssets = new Map<string, CombinedAsset>();
+
+    walletBalances.forEach((wallet) => {
+      wallet.assets.forEach((asset) => {
+        const symbol = asset.symbol;
+        if (!combinedAssets.has(symbol)) {
+          combinedAssets.set(symbol, {
+            symbol,
+            totalAmount: 0,
+            price: asset.price,
+            totalValue: 0,
+          });
+        }
+
+        const combined = combinedAssets.get(symbol);
+        if (combined) {
+          const amount = Number(asset.amount);
+          combined.totalAmount += amount;
+          combined.totalValue += amount * asset.price;
+        }
+      });
+    });
+
+    exchangeBalances.forEach((exchange) => {
+      exchange.assets.forEach((asset) => {
+        const symbol = asset.symbol;
+        if (!combinedAssets.has(symbol)) {
+          combinedAssets.set(symbol, {
+            symbol,
+            totalAmount: 0,
+            price: asset.price,
+            totalValue: 0,
+          });
+        }
+
+        const combined = combinedAssets.get(symbol);
+        if (combined) {
+          const amount = Number(asset.amount);
+          combined.totalAmount += amount;
+          combined.totalValue += amount * asset.price;
+        }
+      });
+    });
+
+    const assets = Array.from(combinedAssets.values())
+      .filter((asset) => asset.totalAmount > 0)
+      .sort((a, b) => b.totalValue - a.totalValue);
+    const exchangeTransactions = await getExchangeTransaction(uuid);
+    const costResult = calculateCost(exchangeTransactions);
+    const result = {
+      assets: assets.map((asset) => {
+        const cost = costResult.find((cost) => cost.symbol === asset.symbol);
+        const averageCost = cost ? cost.averageCost : 0;
+        return {
+          symbol: asset.symbol,
+          totalAmount: asset.totalAmount,
+          averageCost,
+          price: asset.price,
+          totalValue: asset.totalValue,
+        };
+      }),
+      totalValue: assets.reduce((sum, asset) => sum + asset.totalValue, 0),
     };
-    return portfolio;
+    return result;
   } catch (err) {
     throw err;
   }

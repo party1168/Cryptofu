@@ -1,14 +1,18 @@
-import { ExchangeParams, exchangeResponse } from "@/interfaces/exchange";
+import { ExchangeParams } from "@/interfaces/exchange";
+import { BalanceResponse } from "@/interfaces/utils";
 import getBinanceSpot from "./getBinanceSpot";
 import getOkxSpot from "./getOkxSpot";
 import getMaxSpot from "./getMaxSpot";
+import { SpotBalance } from "@/interfaces/exchange";
 import { decryptAES } from "@/lib/utils/rijindael";
 import redis from "../database/redis";
 
-const getAllSpot = async (exchanges: ExchangeParams[]) => {
+const getAllSpot = async (
+  exchanges: ExchangeParams[]
+): Promise<BalanceResponse[]> => {
   const spotData = await Promise.all(
     exchanges.map(async (exchange: ExchangeParams) => {
-      let spot: exchangeResponse;
+      let spot: BalanceResponse;
       const cachedKey = `spot:${exchange.userId}:${exchange.name}`;
       const existingSpotData = await redis.get(cachedKey);
       if (existingSpotData) {
@@ -40,21 +44,15 @@ const getAllSpot = async (exchanges: ExchangeParams[]) => {
         default:
           spot = {
             label: exchange.name,
-            assets: [],
+            assets: [] as SpotBalance[],
             totalBalance: 0,
           };
           break;
-      }
-      if (!spot) {
-        throw new Error("Failed to fetch balances");
       }
       await redis.set(cachedKey, JSON.stringify(spot), "EX", 60);
       return spot;
     })
   );
-  if (!spotData) {
-    throw new Error("Failed to fetch balances");
-  }
   return spotData;
 };
 

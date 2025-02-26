@@ -27,11 +27,7 @@ const calculateCost = (transactions: TransactionRecords[]): CostResult[] => {
           cost.totalQuantity -= transaction.quantity;
         }
         cost.averageCost =
-          cost.totalQuantity > 0
-            ? cost.totalCost / cost.totalQuantity
-            : cost.totalQuantity === 0
-            ? 0
-            : 0;
+          cost.totalQuantity > 0 ? cost.totalCost / cost.totalQuantity : transaction.price;
       }
     } else {
       costResult.set(symbol, {
