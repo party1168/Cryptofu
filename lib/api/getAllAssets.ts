@@ -74,7 +74,7 @@ const getAllAssets = async (uuid: string) => {
           price: asset.price,
           totalValue: asset.totalValue,
         };
-      }),
+      }).filter((asset) => asset.totalValue > 0.01),
       totalValue: assets.reduce((sum, asset) => sum + asset.totalValue, 0),
     };
     return result;

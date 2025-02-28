@@ -40,6 +40,7 @@ const getBinanceTransaction = async (
           allTransactions.push(...transactionRecords);
         }
       }
+      allTransactions.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
       return allTransactions;
     });
 

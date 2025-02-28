@@ -13,7 +13,7 @@ const calculateCost = (transactions: TransactionRecords[]): CostResult[] => {
     if (quoteAsset.includes(transaction.symbol)) {
       return;
     }
-    const symbol = removeQuoteAsset(transaction.symbol);
+    const symbol = removeQuoteAsset(transaction.symbol).toUpperCase();
     if (costResult.has(symbol)) {
       const cost = costResult.get(symbol);
       if (cost) {

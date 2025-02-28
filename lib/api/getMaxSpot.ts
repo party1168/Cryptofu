@@ -17,7 +17,7 @@ const getMaxSpot = async (APIkey: string, APIsecret: string) => {
     spotp.map(async (asset) => {
       if (asset.currency === "twd") {
         return {
-          symbol: asset.currency,
+          symbol: asset.currency.toUpperCase(),
           amount: asset.balance.toString(),
           price: 0.3,
           totalprice: Number(asset.balance.times(0.3).toFixed(3)),
@@ -25,7 +25,7 @@ const getMaxSpot = async (APIkey: string, APIsecret: string) => {
       }
       if (asset.currency === "usdt" || asset.currency === "usdc") {
         return {
-          symbol: asset.currency,
+          symbol: asset.currency.toUpperCase(),
           amount: asset.balance.toString(),
           price: 1,
           totalprice: Number(asset.balance.toFixed(3)),
@@ -42,7 +42,7 @@ const getMaxSpot = async (APIkey: string, APIsecret: string) => {
         };
       }
       return {
-        symbol: asset.currency,
+        symbol: asset.currency.toUpperCase(),
         amount: asset.balance.toString(),
         price: Number(price.toFixed(3)),
         totalprice: Number(asset.balance.times(price).toFixed(3)),
