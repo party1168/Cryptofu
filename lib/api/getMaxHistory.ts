@@ -11,7 +11,8 @@ export const getMaxTWDDeposit = async (APIkey: string, APIsecret: string) => {
   const deposit = await withRetry(
     async () => await max.rest.getDeposits({ currency: "twd" })
   );
-  return deposit;
+  const value = deposit.reduce((acc, cur) => acc + cur.amount.toNumber(), 0);
+  return value;
 };
 
 export default getMaxHistory;
