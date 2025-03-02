@@ -6,6 +6,7 @@ import Wallet from "@/models/Wallet";
 import { CombinedAsset } from "@/interfaces/utils";
 import getExchangeTransaction from "./getExchangeTransaction";
 import calculateCost from "../utils/calculateCost";
+import calculateROI from "../utils/calculateROI";
 
 const getAllAssets = async (uuid: string) => {
   try {
@@ -64,17 +65,20 @@ const getAllAssets = async (uuid: string) => {
     const exchangeTransactions = await getExchangeTransaction(uuid);
     const costResult = calculateCost(exchangeTransactions);
     const result = {
-      assets: assets.map((asset) => {
-        const cost = costResult.find((cost) => cost.symbol === asset.symbol);
-        const averageCost = cost ? cost.averageCost : 0;
-        return {
-          symbol: asset.symbol,
-          totalAmount: asset.totalAmount,
-          averageCost,
-          price: asset.price,
-          totalValue: asset.totalValue,
-        };
-      }).filter((asset) => asset.totalValue > 0.01),
+      assets: assets
+        .map((asset) => {
+          const cost = costResult.find((cost) => cost.symbol === asset.symbol);
+          const averageCost = cost ? cost.averageCost : 0;
+          return {
+            symbol: asset.symbol,
+            totalAmount: asset.totalAmount,
+            averageCost,
+            price: asset.price,
+            totalValue: asset.totalValue,
+            roi: calculateROI(averageCost, asset.price),
+          };
+        })
+        .filter((asset) => asset.totalValue > 0.01),
       totalValue: assets.reduce((sum, asset) => sum + asset.totalValue, 0),
     };
     return result;
