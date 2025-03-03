@@ -1,18 +1,15 @@
-import { ExchangeParams } from "@/interfaces/exchange/exchange";
-import { IBalance } from "@/interfaces/utils";
+import { IExchange } from "@/interfaces/models";
+import { IAssetStorage, IUnifiedAsset } from "@/interfaces/utils";
 import getBinanceSpot from "./getBinanceSpot";
 import getOkxSpot from "./getOkxSpot";
 import getMaxSpot from "./getMaxSpot";
-import { SpotBalance } from "@/interfaces/exchange/exchange";
 import { decryptAES } from "@/lib/utils/rijindael";
 import redis from "../database/redis";
 
-const getAllSpot = async (
-  exchanges: ExchangeParams[]
-): Promise<IBalance[]> => {
+const getAllSpot = async (exchanges: IExchange[]): Promise<IAssetStorage[]> => {
   const spotData = await Promise.all(
-    exchanges.map(async (exchange: ExchangeParams) => {
-      let spot: IBalance;
+    exchanges.map(async (exchange: IExchange) => {
+      let spot: IAssetStorage;
       const cachedKey = `spot:${exchange.userId}:${exchange.name}`;
       const existingSpotData = await redis.get(cachedKey);
       if (existingSpotData) {
@@ -44,7 +41,7 @@ const getAllSpot = async (
         default:
           spot = {
             label: exchange.name,
-            assets: [] as SpotBalance[],
+            assets: [] as IUnifiedAsset[],
             totalBalance: 0,
           };
           break;

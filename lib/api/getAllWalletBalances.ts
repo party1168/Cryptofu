@@ -1,19 +1,20 @@
 import { AnkrProvider } from "@ankr.com/ankr.js";
 import redis from "@/lib/database/redis";
-import { IBalance } from "@/interfaces/utils";
-import { WalletParams, WalletBalance } from "@/interfaces/wallet/wallet";
+import { IAssetStorage } from "@/interfaces/utils";
+import { IWallet } from "@/interfaces/models";
+import { IWalletAsset } from "@/interfaces/wallet";
 
 const ANKR_API_KEY = process.env.ANKR_API_KEY || "";
 
 const getAllWalletBalances = async (
-  wallets: WalletParams[]
-): Promise<IBalance[]> => {
+  wallets: IWallet[]
+): Promise<IAssetStorage[]> => {
   try {
     const provider = new AnkrProvider(
       `https://rpc.ankr.com/multichain/${ANKR_API_KEY}`
     );
     const balances = await Promise.all(
-      wallets.map(async (wallet: WalletParams) => {
+      wallets.map(async (wallet: IWallet) => {
         const cachedKey = `wallet_address:${wallet.address}`;
         const cachedBalances = await redis.get(cachedKey);
         if (cachedBalances) {
@@ -22,17 +23,17 @@ const getAllWalletBalances = async (
         const walletBalances = await provider.getAccountBalance({
           walletAddress: wallet.address,
         });
-        const balances: WalletBalance[] = walletBalances.assets.map((asset) => {
+        const balances: IWalletAsset[] = walletBalances.assets.map((asset) => {
           return {
             symbol: asset.tokenSymbol,
             network: asset.blockchain.toString(),
             amount: asset.balance,
             price: Number(Number(asset.tokenPrice).toFixed(3)),
-            totalprice: Number(Number(asset.balanceUsd).toFixed(3)),
+            totalValue: Number(Number(asset.balanceUsd).toFixed(3)),
           };
         });
         const totalBalance = balances.reduce((acc, curr) => {
-          return acc + curr.totalprice;
+          return acc + curr.totalValue;
         }, 0);
         const walletData = {
           label: wallet.label,
