@@ -1,9 +1,3 @@
-
-export interface AssetBalance {
-  asset: string;
-  amount: string;
-}
-
 export interface OKXAssetBalance {
   ccy: string; // currency
   bal: string; // balance

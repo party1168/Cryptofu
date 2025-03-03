@@ -10,17 +10,18 @@ import {
   RestSimpleEarnTypes,
   Spot,
 } from "@binance/connector-typescript";
-import { AssetBalance, SpotBalance } from "@/interfaces/exchange/exchange";
+import { SpotBalance } from "@/interfaces/exchange/exchange";
 import { getCryptoPricesApi } from "./getCryptoPrice";
 import withRetry from "../utils/withRetry";
 const BASE_URL = "https://api.binance.com";
+type AssetBalance = Pick<SpotBalance, "symbol" | "amount">;
 
 const convertSpotBalance = async (
   asset: RestWalletTypes.userAssetResponse[]
 ): Promise<AssetBalance[]> => {
   return asset.map((asset) => {
     return {
-      asset: asset.asset,
+      symbol: asset.asset,
       amount: (Number(asset.free) + Number(asset.locked)).toString(),
     };
   });
@@ -31,7 +32,7 @@ const convertFundingBalance = async (
 ): Promise<AssetBalance[]> => {
   return asset.map((asset) => {
     return {
-      asset: asset.asset,
+      symbol: asset.asset,
       amount: (Number(asset.free) + Number(asset.locked)).toString(),
     };
   });
@@ -42,7 +43,7 @@ const convertFlexibleBalance = async (
 ): Promise<AssetBalance[]> => {
   return asset.rows.map((asset) => {
     return {
-      asset: asset.asset,
+      symbol: asset.asset,
       amount: asset.totalAmount,
     };
   });
@@ -53,7 +54,7 @@ const convertLockedBalance = async (
 ): Promise<AssetBalance[]> => {
   return asset.rows.map((asset) => {
     return {
-      asset: asset.asset,
+      symbol: asset.asset,
       amount: asset.amount,
     };
   });
@@ -87,7 +88,7 @@ const getBinanceSpot = async (API_KEY: string, API_SECRET: string) => {
     ];
 
     const totalBalances = allBalances.reduce((acc, cur) => {
-      const existing = acc.find((item) => item.asset === cur.asset);
+      const existing = acc.find((item) => item.symbol === cur.symbol);
       if (existing) {
         existing.amount = (
           Number(existing.amount) + Number(cur.amount)
@@ -100,11 +101,11 @@ const getBinanceSpot = async (API_KEY: string, API_SECRET: string) => {
     let totalBalance = 0;
     const totalAssets = await Promise.all<SpotBalance>(
       totalBalances.map(async (asset) => {
-        const price = await getCryptoPricesApi(asset.asset);
+        const price = await getCryptoPricesApi(asset.symbol);
         const totalprice = Number(asset.amount) * Number(price);
         totalBalance += totalprice;
         return {
-          symbol: asset.asset,
+          symbol: asset.symbol,
           amount: asset.amount,
           price: price,
           totalprice: Number(totalprice.toFixed(3)),

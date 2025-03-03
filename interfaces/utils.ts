@@ -1,4 +1,4 @@
-import { SpotBalance } from "@/interfaces/exchange/exchange";
+import { SpotBalance } from "./exchange";
 import { WalletBalance } from "@/interfaces/wallet/wallet";
 export interface ICost {
   symbol: string;
