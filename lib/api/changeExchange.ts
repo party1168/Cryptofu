@@ -1,8 +1,7 @@
 import Exchange from "@/models/Exchange";
 import connectDB from "@/lib/database/db";
-import { ExchangeParams } from "@/interfaces/exchange/exchange";
-
-const changeExchange = async (id: string, update: Partial<ExchangeParams>) => {
+import { IExchange } from "@/interfaces/models";
+const changeExchange = async (id: string, update: Partial<IExchange>) => {
   try {
     await connectDB();
     const updatedExchange = Exchange.findOneAndUpdate(

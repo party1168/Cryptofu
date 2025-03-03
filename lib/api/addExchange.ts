@@ -1,9 +1,9 @@
 import Exchange from "@/models/Exchange";
 import connectDB from "@/lib/database/db";
 import User from "@/models/User";
-import { IExchangeParams } from "@/interfaces/exchange/exchange";
+import { IExchange } from "@/interfaces/models";
 
-const addExchange = async (uuid: string, exchange: IExchangeParams) => {
+const addExchange = async (uuid: string, exchange: IExchange) => {
   try {
     await connectDB();
     const user = await User.findOne({ uuid: uuid });

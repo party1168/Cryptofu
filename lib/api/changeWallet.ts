@@ -1,10 +1,9 @@
 import Wallet from "@/models/Wallet";
 import connectDB from "@/lib/database/db";
-import { WalletParams } from "@/interfaces/wallet/wallet";
-
+import { IWallet } from "@/interfaces/models";
 const changeWallet = async (
   { userId, id }: { userId: string; id: string },
-  update: Partial<WalletParams>
+  update: Partial<IWallet>
 ) => {
   try {
     await connectDB();
