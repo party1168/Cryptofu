@@ -1,4 +1,4 @@
-export interface TransactionRecords {
+export interface IExchangeTransaction {
   id: string;
   orderId: string;
   symbol: string;

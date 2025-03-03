@@ -3,7 +3,7 @@ import getAllSpot from "./getAllSpot";
 import getAllWalletBalances from "./getAllWalletBalances";
 import Exchange from "@/models/Exchange";
 import Wallet from "@/models/Wallet";
-import { ICombinedAsset, IAssets, IPortfolio } from "@/interfaces/utils";
+import { ICombinedAsset, IAssets } from "@/interfaces/utils";
 import getExchangeTransaction from "./getExchangeTransaction";
 import calculateCost from "../utils/calculateCost";
 import calculateROI from "../utils/calculateROI";
