@@ -1,8 +1,11 @@
 import { MAX } from "max-exchange-api-node";
 import withRetry from "../utils/withRetry";
-import { SpotBalance } from "@/interfaces/exchange/exchange";
+import { IUnifiedAsset, IAssetStorage } from "@/interfaces/utils";
 
-const getMaxSpot = async (APIkey: string, APIsecret: string) => {
+const getMaxSpot = async (
+  APIkey: string,
+  APIsecret: string
+): Promise<IAssetStorage> => {
   const max = new MAX({ accessKey: APIkey, secretKey: APIsecret });
   const spot = await withRetry(
     async () => await max.rest.spotWallet.getAccounts({})
@@ -13,22 +16,22 @@ const getMaxSpot = async (APIkey: string, APIsecret: string) => {
   const indexPrice = await withRetry(
     async () => await max.rest.getIndexPrices()
   );
-  const spotwprice: SpotBalance[] = await Promise.all(
+  const spotwprice: IUnifiedAsset[] = await Promise.all(
     spotp.map(async (asset) => {
       if (asset.currency === "twd") {
         return {
           symbol: asset.currency.toUpperCase(),
-          amount: asset.balance.toString(),
+          amount: asset.balance.toNumber(),
           price: 0.3,
-          totalprice: Number(asset.balance.times(0.3).toFixed(3)),
+          totalValue: Number(asset.balance.times(0.3).toFixed(3)),
         };
       }
       if (asset.currency === "usdt" || asset.currency === "usdc") {
         return {
           symbol: asset.currency.toUpperCase(),
-          amount: asset.balance.toString(),
+          amount: asset.balance.toNumber(),
           price: 1,
-          totalprice: Number(asset.balance.toFixed(3)),
+          totalValue: Number(asset.balance.toFixed(3)),
         };
       }
       const pricekey = `${asset.currency}usdt`;
@@ -36,20 +39,20 @@ const getMaxSpot = async (APIkey: string, APIsecret: string) => {
       if (!price) {
         return {
           symbol: asset.currency,
-          amount: asset.balance.toString(),
+          amount: asset.balance.toNumber(),
           price: 0,
-          totalprice: 0,
+          totalValue: 0,
         };
       }
       return {
         symbol: asset.currency.toUpperCase(),
-        amount: asset.balance.toString(),
+        amount: asset.balance.toNumber(),
         price: Number(price.toFixed(3)),
-        totalprice: Number(asset.balance.times(price).toFixed(3)),
+        totalValue: Number(asset.balance.times(price).toFixed(3)),
       };
     })
   );
-  const totalBalance = spotwprice.reduce((acc, cur) => acc + cur.totalprice, 0);
+  const totalBalance = spotwprice.reduce((acc, cur) => acc + cur.totalValue, 0);
   return {
     label: "Max",
     assets: spotwprice,

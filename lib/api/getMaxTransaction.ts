@@ -1,13 +1,12 @@
 import { MAX } from "max-exchange-api-node";
-import { TransactionRecords } from "@/interfaces/exchange/exchange";
-
+import { IExchangeTransaction } from "@/interfaces/exchange";
 const getMaxTransaction = async (
   APIkey: string,
-  APIsecret: string //: Promise<TransactionRecords>
-) => {
+  APIsecret: string
+): Promise<IExchangeTransaction[]> => {
   const max = new MAX({ accessKey: APIkey, secretKey: APIsecret });
   const history = await max.rest.spotWallet.getTrades({});
-  const transactions: TransactionRecords[] = history.map((transaction) => {
+  const transactions: IExchangeTransaction[] = history.map((transaction) => {
     const getSide = (side: string) => {
       switch (side) {
         case "bid":
