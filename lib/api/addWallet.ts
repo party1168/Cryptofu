@@ -2,7 +2,7 @@ import Wallet from "@/models/Wallet";
 import connectDB from "@/lib/database/db";
 import User from "@/models/User";
 import { IWallet } from "@/interfaces/models";
-const addWallet = async (uuid: string, wallet: IWallet) => {
+const addWallet = async (uuid: string, wallet: Partial<IWallet>) => {
   try {
     await connectDB();
     const user = await User.findOne({ uuid: uuid });
