@@ -1,37 +1,44 @@
 import axios, { AxiosError } from "axios";
 import crypto from "crypto";
+import { IUnifiedAsset } from "@/interfaces/utils";
 import {
-  SpotBalance,
-  OKXAccountBalance,
-  OKXAssetBalance,
-  OKXFinanceBalance,
-  spotParams,
-} from "@/interfaces/exchange/exchange";
+  IOkxAccountBalance,
+  IOkxAssetBalance,
+  IOkxFinanceBalance,
+} from "@/interfaces/exchange";
 
 const baseURL = "https://www.okx.com";
 
-const convertAssetBalance = async (balance: OKXAssetBalance[]) => {
-  return balance.map((asset: OKXAssetBalance) => {
+type spotParams = Pick<IUnifiedAsset, "symbol" | "amount">;
+
+const convertAssetBalance = async (
+  balance: IOkxAssetBalance[]
+): Promise<spotParams[]> => {
+  return balance.map((asset: IOkxAssetBalance) => {
     return {
       symbol: asset.ccy,
-      amount: asset.bal,
+      amount: Number(asset.bal),
     };
   });
 };
-const convertAccountBalance = async (balance: OKXAccountBalance[]) => {
-  return balance.map((asset: OKXAccountBalance) => {
+const convertAccountBalance = async (
+  balance: IOkxAccountBalance[]
+): Promise<spotParams[]> => {
+  return balance.map((asset: IOkxAccountBalance) => {
     return {
       symbol: asset.ccy,
-      amount: asset.cashBal,
+      amount: Number(asset.cashBal),
     };
   });
 };
 
-const convertFinanceBalance = async (balance: OKXFinanceBalance[]) => {
-  return balance.map((asset: OKXFinanceBalance) => {
+const convertFinanceBalance = async (
+  balance: IOkxFinanceBalance[]
+): Promise<spotParams[]> => {
+  return balance.map((asset: IOkxFinanceBalance) => {
     return {
       symbol: asset.ccy,
-      amount: asset.amt,
+      amount: Number(asset.amt),
     };
   });
 };
@@ -73,15 +80,13 @@ const getOkxSpot = async (
       ...(await convertFinanceBalance(financeBalance.data.data)),
     ]);
 
-    const spot = allBalances
+    const spot: spotParams[] = allBalances
       .reduce((acc: spotParams[], bal) => {
         const existing = acc.find(
           (item: spotParams) => item.symbol === bal.symbol
         );
         if (existing) {
-          existing.amount = (
-            Number(existing.amount) + Number(bal.amount)
-          ).toString();
+          existing.amount = Number(existing.amount) + Number(bal.amount);
         } else {
           acc.push(bal);
         }
@@ -90,17 +95,17 @@ const getOkxSpot = async (
       .map((bal) => {
         return {
           symbol: bal.symbol,
-          amount: Number(bal.amount).toFixed(10),
+          amount: Number(Number(bal.amount).toFixed(10)),
         };
       });
     let totalBalance = 0;
-    const spotwPrice: SpotBalance[] = await Promise.all(
+    const spotwPrice: IUnifiedAsset[] = await Promise.all(
       spot.map(async (item) => {
         if (item.symbol === "USDT" || item.symbol === "USDC") {
           return {
             ...item,
             price: 1,
-            totalprice: Number(Number(item.amount).toFixed(3)),
+            totalValue: Number(Number(item.amount).toFixed(3)),
           };
         }
         const path = `/api/v5/market/ticker?instId=${item.symbol}-USDT`;
@@ -111,11 +116,11 @@ const getOkxSpot = async (
         return {
           ...item,
           price: Number(price),
-          totalprice: Number(totalprice.toFixed(3)),
+          totalValue: Number(totalprice.toFixed(3)),
         };
       })
     );
-    spotwPrice.sort((a, b) => b.totalprice - a.totalprice);
+    spotwPrice.sort((a, b) => b.totalValue - a.totalValue);
     totalBalance = Number(totalBalance.toFixed(3));
     return {
       label: "OKX",

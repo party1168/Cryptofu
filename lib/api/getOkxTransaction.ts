@@ -1,13 +1,15 @@
 import { RestClient } from "okx-api";
-import { TransactionRecords } from "@/interfaces/exchange/exchange";
-import { OkxBillArchiveType } from "@/interfaces/exchange/exchange";
+import {
+  IOkxBillArchiveType,
+  IExchangeTransaction,
+} from "@/interfaces/exchange";
 
 const quoteAssets = ["USDT", "USDC", "FDUSD", "PYUSD"];
 const getOkxTransaction = async (
   APIkey: string,
   APIsecret: string,
   passphrase: string
-): Promise<TransactionRecords[]> => {
+): Promise<IExchangeTransaction[]> => {
   try {
     const client = new RestClient({
       apiKey: APIkey,
@@ -24,9 +26,9 @@ const getOkxTransaction = async (
         return;
       }
       return transaction;
-    }) as OkxBillArchiveType[];
+    }) as IOkxBillArchiveType[];
 
-    const transactionRecords: TransactionRecords[] = transaction.map(
+    const transactionRecords: IExchangeTransaction[] = transaction.map(
       (transaction) => {
         const getSide = (subType: string) => {
           switch (subType) {

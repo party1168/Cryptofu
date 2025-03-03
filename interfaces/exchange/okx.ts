@@ -1,25 +1,25 @@
-export interface OKXAssetBalance {
+export interface IOkxAssetBalance {
   ccy: string; // currency
   bal: string; // balance
   frozenBal: string;
   availBal: string;
 }
 
-export interface OKXAccountBalance {
+export interface IOkxAccountBalance {
   ccy: string;
   cashBal: string;
   uTime: string;
   isoEq: string;
 }
 
-export interface OKXFinanceBalance {
+export interface IOkxFinanceBalance {
   ccy: string;
   amt: string;
   earnings: string;
   rate: string;
 }
 
-export interface OkxBillArchiveType {
+export interface IOkxBillArchiveType {
   bal: string;
   balChg: string;
   billId: string;

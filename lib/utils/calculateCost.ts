@@ -1,5 +1,5 @@
-import { TransactionRecords } from "@/interfaces/exchange/exchange";
-import { CostResult } from "@/interfaces/utils";
+import { IExchangeTransaction } from "@/interfaces/exchange";
+import { IAssetCostSummary } from "@/interfaces/utils";
 const quoteAsset = ["USDT", "USDC", "PYUSD", "FDUSD"];
 const removeQuoteAsset = (symbol: string): string => {
   quoteAsset.forEach((quote) => {
@@ -7,9 +7,11 @@ const removeQuoteAsset = (symbol: string): string => {
   });
   return symbol;
 };
-const calculateCost = (transactions: TransactionRecords[]): CostResult[] => {
-  const costResult: Map<string, CostResult> = new Map();
-  transactions.forEach((transaction: TransactionRecords) => {
+const calculateCost = (
+  transactions: IExchangeTransaction[]
+): IAssetCostSummary[] => {
+  const costResult: Map<string, IAssetCostSummary> = new Map();
+  transactions.forEach((transaction: IExchangeTransaction) => {
     if (quoteAsset.includes(transaction.symbol)) {
       return;
     }
@@ -27,7 +29,9 @@ const calculateCost = (transactions: TransactionRecords[]): CostResult[] => {
           cost.totalQuantity -= transaction.quantity;
         }
         cost.averageCost =
-          cost.totalQuantity > 0 ? cost.totalCost / cost.totalQuantity : transaction.price;
+          cost.totalQuantity > 0
+            ? cost.totalCost / cost.totalQuantity
+            : transaction.price;
       }
     } else {
       costResult.set(symbol, {
