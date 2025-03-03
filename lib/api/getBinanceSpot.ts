@@ -10,7 +10,7 @@ import {
   RestSimpleEarnTypes,
   Spot,
 } from "@binance/connector-typescript";
-import { AssetBalance, SpotBalance } from "@/interfaces/exchange";
+import { AssetBalance, SpotBalance } from "@/interfaces/exchange/exchange";
 import { getCryptoPricesApi } from "./getCryptoPrice";
 import withRetry from "../utils/withRetry";
 const BASE_URL = "https://api.binance.com";

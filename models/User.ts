@@ -1,23 +1,5 @@
-import mongoose, { Schema, Document } from "mongoose";
-/**
- * 使用者介面，繼承自 mongoose 的 Document。
- * @interface IUser
- * @property {string} uuid - 使用者的唯一識別碼。
- * @property {string} name - 使用者名稱。
- * @property {string} email - 使用者電子郵件。
- * @property {string} password - 使用者密碼。
- * @property {string} salt - 密碼鹽值。
- * @property {string} role - 使用者角色。
- */
-
-export interface IUser extends Document {
-  uuid: string;
-  name: string;
-  email: string;
-  password: string;
-  salt: string;
-  role: string;
-}
+import mongoose, { Schema } from "mongoose";
+import { IUser } from "@/interfaces/models";
 /**
  * 使用者 Schema 定義。
  * @const {Schema} UserSchema

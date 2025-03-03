@@ -1,7 +1,7 @@
 import Wallet from "@/models/Wallet";
 import connectDB from "@/lib/database/db";
 import User from "@/models/User";
-import { WalletParams } from "@/interfaces/wallet";
+import { WalletParams } from "@/interfaces/wallet/wallet";
 
 const addWallet = async (uuid: string, wallet: WalletParams) => {
   try {

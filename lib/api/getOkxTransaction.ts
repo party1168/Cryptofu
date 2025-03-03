@@ -1,6 +1,6 @@
 import { RestClient } from "okx-api";
-import { TransactionRecords } from "@/interfaces/exchange";
-import { OkxBillArchiveType } from "@/interfaces/exchange";
+import { TransactionRecords } from "@/interfaces/exchange/exchange";
+import { OkxBillArchiveType } from "@/interfaces/exchange/exchange";
 
 const quoteAssets = ["USDT", "USDC", "FDUSD", "PYUSD"];
 const getOkxTransaction = async (

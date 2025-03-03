@@ -3,7 +3,7 @@ import { decryptAES } from "../utils/rijindael";
 import getOkxTransaction from "./getOkxTransaction";
 import getMaxTransaction from "./getMaxTransaction";
 import connectDB from "../database/db";
-import { TransactionRecords } from "@/interfaces/exchange";
+import { TransactionRecords } from "@/interfaces/exchange/exchange";
 import Exchange from "@/models/Exchange";
 
 const getExchangeTransaction = async (

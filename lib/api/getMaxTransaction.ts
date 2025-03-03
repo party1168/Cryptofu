@@ -1,5 +1,5 @@
 import { MAX } from "max-exchange-api-node";
-import { TransactionRecords } from "@/interfaces/exchange";
+import { TransactionRecords } from "@/interfaces/exchange/exchange";
 
 const getMaxTransaction = async (
   APIkey: string,

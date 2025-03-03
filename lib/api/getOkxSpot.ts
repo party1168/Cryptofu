@@ -6,7 +6,7 @@ import {
   OKXAssetBalance,
   OKXFinanceBalance,
   spotParams,
-} from "@/interfaces/exchange";
+} from "@/interfaces/exchange/exchange";
 
 const baseURL = "https://www.okx.com";
 

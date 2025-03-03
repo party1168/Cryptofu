@@ -3,7 +3,7 @@ import getAllSpot from "./getAllSpot";
 import getAllWalletBalances from "./getAllWalletBalances";
 import Exchange from "@/models/Exchange";
 import Wallet from "@/models/Wallet";
-import { CombinedAsset } from "@/interfaces/utils";
+import { ICombinedAsset, IAssets, IPortfolio } from "@/interfaces/utils";
 import getExchangeTransaction from "./getExchangeTransaction";
 import calculateCost from "../utils/calculateCost";
 import calculateROI from "../utils/calculateROI";
@@ -15,7 +15,7 @@ const getAllAssets = async (uuid: string) => {
     const exchanges = await Exchange.find({ userId: uuid });
     const walletBalances = await getAllWalletBalances(wallets);
     const exchangeBalances = await getAllSpot(exchanges);
-    const combinedAssets = new Map<string, CombinedAsset>();
+    const combinedAssets = new Map<string, ICombinedAsset>();
 
     walletBalances.forEach((wallet) => {
       wallet.assets.forEach((asset) => {
@@ -64,21 +64,22 @@ const getAllAssets = async (uuid: string) => {
       .sort((a, b) => b.totalValue - a.totalValue);
     const exchangeTransactions = await getExchangeTransaction(uuid);
     const costResult = calculateCost(exchangeTransactions);
+    const assetswithROI: IAssets[] = assets
+      .map((asset) => {
+        const cost = costResult.find((cost) => cost.symbol === asset.symbol);
+        const averageCost = cost ? cost.averageCost : 0;
+        return {
+          symbol: asset.symbol,
+          totalAmount: asset.totalAmount,
+          averageCost,
+          price: asset.price,
+          totalValue: asset.totalValue,
+          roi: calculateROI(averageCost, asset.price),
+        };
+      })
+      .filter((asset) => asset.totalValue > 0.01);
     const result = {
-      assets: assets
-        .map((asset) => {
-          const cost = costResult.find((cost) => cost.symbol === asset.symbol);
-          const averageCost = cost ? cost.averageCost : 0;
-          return {
-            symbol: asset.symbol,
-            totalAmount: asset.totalAmount,
-            averageCost,
-            price: asset.price,
-            totalValue: asset.totalValue,
-            roi: calculateROI(averageCost, asset.price),
-          };
-        })
-        .filter((asset) => asset.totalValue > 0.01),
+      assets: assetswithROI,
       totalValue: assets.reduce((sum, asset) => sum + asset.totalValue, 0),
     };
     return result;

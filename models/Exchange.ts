@@ -1,14 +1,5 @@
-import mongoose, { Document, Schema } from "mongoose";
-
-export interface IExchange extends Document {
-  userId: string;
-  name: string;
-  APIkey: string;
-  APIsecret: string;
-  passphrase:string;
-  createAt: Date;
-}
-
+import mongoose, { Schema } from "mongoose";
+import { IExchange } from "@/interfaces/models";
 const ExchangeSchema: Schema = new Schema({
   userId: { type: String, required: true },
   name: { type: String, required: true },

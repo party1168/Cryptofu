@@ -1,4 +1,4 @@
-import { TransactionRecords } from "@/interfaces/exchange";
+import { TransactionRecords } from "@/interfaces/exchange/exchange";
 import { CostResult } from "@/interfaces/utils";
 const quoteAsset = ["USDT", "USDC", "PYUSD", "FDUSD"];
 const removeQuoteAsset = (symbol: string): string => {

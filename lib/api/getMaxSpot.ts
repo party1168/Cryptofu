@@ -1,6 +1,6 @@
 import { MAX } from "max-exchange-api-node";
 import withRetry from "../utils/withRetry";
-import { SpotBalance } from "@/interfaces/exchange";
+import { SpotBalance } from "@/interfaces/exchange/exchange";
 
 const getMaxSpot = async (APIkey: string, APIsecret: string) => {
   const max = new MAX({ accessKey: APIkey, secretKey: APIsecret });

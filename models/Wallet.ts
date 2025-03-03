@@ -1,14 +1,5 @@
-import mongoose, { Document, Schema } from "mongoose";
-
-export interface IWallet extends Document {
-  userId: string;
-  label: string;
-  address: string;
-  blockchain: string;
-  type: string;
-  createAt: Date;
-}
-
+import mongoose, { Schema } from "mongoose";
+import { IWallet } from "@/interfaces/models";
 const supportedBlockchain = ["EVM"];
 
 const WalletSchema: Schema = new Schema({
