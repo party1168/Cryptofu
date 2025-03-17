@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { decryptAES } from "@/lib/utils/rijindael";
 import Exchange from "@/models/Exchange";
+import connectDB from "@/lib/database/db";
 import getExchangeMaxTransaction from "@/lib/api/getMaxTransaction";
 import { verifyToken } from "@/lib/utils/auth";
 
@@ -19,6 +20,7 @@ export async function GET(request: NextRequest) {
   }
   const token = authHeader.split(" ")[1];
   try {
+    await connectDB();
     const jwtData = await verifyToken(token);
     const userExchange = await Exchange.findOne({
       userId: jwtData.uuid,

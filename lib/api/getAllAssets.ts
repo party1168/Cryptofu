@@ -11,8 +11,9 @@ import {
 import getExchangeTransaction from "./getExchangeTransaction";
 import calculateCost from "../utils/calculateCost";
 import calculateROI from "../utils/calculateROI";
+import getAllDeposit from "./getAllDeposit";
 
-const getAllAssets = async (uuid: string) => {
+const getAllAssets = async (uuid: string): Promise<IUserPortfolioSummary> => {
   try {
     await connectDB();
     const wallets = await Wallet.find({ userId: uuid });
@@ -82,9 +83,16 @@ const getAllAssets = async (uuid: string) => {
         };
       })
       .filter((asset) => asset.totalValue > 0.01);
+    const totalValue = assets.reduce((sum, asset) => sum + asset.totalValue, 0);
+    const userDeposit = await getAllDeposit(uuid);
+    const totalReturn = totalValue - userDeposit.depositUSD;
+    const totalROI = (totalReturn / userDeposit.depositUSD) * 100;
     const result = {
       assets: assetswithROI,
-      totalValue: assets.reduce((sum, asset) => sum + asset.totalValue, 0),
+      totalValue,
+      totalReturn,
+      totalROI,
+      totalDeposit: userDeposit,
     };
     return result;
   } catch (err) {
