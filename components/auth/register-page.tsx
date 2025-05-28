@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 
-
 export function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -53,22 +52,24 @@ export function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#eeedf5] flex items-center justify-center p-6">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-[#eeedf5] flex items-center justify-center p-4 sm:p-6">
+      <div className="w-full max-w-sm sm:max-w-md">
         {/* Logo Section */}
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="bg-[#6c5ce7] w-12 h-12 rounded-xl flex items-center justify-center">
-              <span className="text-white font-bold text-xl">F</span>
+        <div className="text-center mb-6 sm:mb-8">
+          <div className="flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+            <div className="bg-[#6c5ce7] w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center">
+              <span className="text-white font-bold text-lg sm:text-xl">F</span>
             </div>
-            <span className="text-2xl font-bold text-gray-800">Cryptofu</span>
+            <span className="text-xl sm:text-2xl font-bold text-gray-800">
+              Cryptofu
+            </span>
           </div>
           <p className="text-gray-600">建立您的新帳戶</p>
         </div>
 
         {/* Register Form */}
-        <div className="bg-white rounded-3xl p-8 shadow-sm">
-          <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-sm">
+          <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
             {/* Email Field */}
             <div className="space-y-2">
               <label
@@ -78,14 +79,14 @@ export function RegisterPage() {
                 電子郵件
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 sm:h-5 sm:w-5" />
                 <Input
                   id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="請輸入您的電子郵件"
-                  className="pl-10 bg-[#f5f4fa] border-0 rounded-lg h-12"
+                  className="pl-9 sm:pl-10 bg-[#f5f4fa] border-0 rounded-lg h-10 sm:h-12 text-sm sm:text-base"
                   required
                 />
               </div>
@@ -100,14 +101,14 @@ export function RegisterPage() {
                 密碼
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 sm:h-5 sm:w-5" />
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="請輸入您的密碼"
-                  className="pl-10 pr-10 bg-[#f5f4fa] border-0 text-gray-700 rounded-lg h-12"
+                  className="pl-9 sm:pl-10 pr-9 sm:pr-10 bg-[#f5f4fa] border-0 rounded-lg h-10 sm:h-12 text-sm sm:text-base"
                   required
                 />
                 <button
@@ -116,9 +117,9 @@ export function RegisterPage() {
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
                   {showPassword ? (
-                    <EyeOff className="h-5 w-5" />
+                    <EyeOff className="h-4 w-4 sm:h-5 sm:w-5" />
                   ) : (
-                    <Eye className="h-5 w-5" />
+                    <Eye className="h-4 w-4 sm:h-5 sm:w-5" />
                   )}
                 </button>
               </div>
@@ -128,9 +129,9 @@ export function RegisterPage() {
                 <div className="mt-2 space-y-1">
                   <div className="flex items-center gap-2 text-xs">
                     {passwordValidation.minLength ? (
-                      <CheckCircle className="h-3 w-3 text-green-500" />
+                      <CheckCircle className="h-3 w-3 text-green-500 flex-shrink-0" />
                     ) : (
-                      <XCircle className="h-3 w-3 text-red-500" />
+                      <XCircle className="h-3 w-3 text-red-500 flex-shrink-0" />
                     )}
                     <span
                       className={
@@ -144,9 +145,9 @@ export function RegisterPage() {
                   </div>
                   <div className="flex items-center gap-2 text-xs">
                     {passwordValidation.hasNumber ? (
-                      <CheckCircle className="h-3 w-3 text-green-500" />
+                      <CheckCircle className="h-3 w-3 text-green-500 flex-shrink-0" />
                     ) : (
-                      <XCircle className="h-3 w-3 text-red-500" />
+                      <XCircle className="h-3 w-3 text-red-500 flex-shrink-0" />
                     )}
                     <span
                       className={
@@ -160,9 +161,9 @@ export function RegisterPage() {
                   </div>
                   <div className="flex items-center gap-2 text-xs">
                     {passwordValidation.hasLetter ? (
-                      <CheckCircle className="h-3 w-3 text-green-500" />
+                      <CheckCircle className="h-3 w-3 text-green-500 flex-shrink-0" />
                     ) : (
-                      <XCircle className="h-3 w-3 text-red-500" />
+                      <XCircle className="h-3 w-3 text-red-500 flex-shrink-0" />
                     )}
                     <span
                       className={
@@ -187,14 +188,14 @@ export function RegisterPage() {
                 確認密碼
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 sm:h-5 sm:w-5" />
                 <Input
                   id="confirmPassword"
                   type={showConfirmPassword ? "text" : "password"}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="請再次輸入您的密碼"
-                  className="pl-10 pr-10 bg-[#f5f4fa] border-0 text-gray-700 rounded-lg h-12"
+                  className="pl-9 sm:pl-10 pr-9 sm:pr-10 bg-[#f5f4fa] border-0 rounded-lg h-10 sm:h-12 text-sm sm:text-base"
                   required
                 />
                 <button
@@ -203,9 +204,9 @@ export function RegisterPage() {
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
                   {showConfirmPassword ? (
-                    <EyeOff className="h-5 w-5" />
+                    <EyeOff className="h-4 w-4 sm:h-5 sm:w-5" />
                   ) : (
-                    <Eye className="h-5 w-5" />
+                    <Eye className="h-4 w-4 sm:h-5 sm:w-5" />
                   )}
                 </button>
               </div>
@@ -215,12 +216,12 @@ export function RegisterPage() {
                 <div className="flex items-center gap-2 text-xs mt-2">
                   {isPasswordMatch ? (
                     <>
-                      <CheckCircle className="h-3 w-3 text-green-500" />
+                      <CheckCircle className="h-3 w-3 text-green-500 flex-shrink-0" />
                       <span className="text-green-600">密碼匹配</span>
                     </>
                   ) : (
                     <>
-                      <XCircle className="h-3 w-3 text-red-500" />
+                      <XCircle className="h-3 w-3 text-red-500 flex-shrink-0" />
                       <span className="text-red-600">密碼不匹配</span>
                     </>
                   )}
@@ -233,7 +234,7 @@ export function RegisterPage() {
               <input
                 type="checkbox"
                 id="terms"
-                className="mt-1 rounded border-gray-300 text-[#6c5ce7] focus:ring-[#6c5ce7]"
+                className="mt-1 rounded border-gray-300 text-[#6c5ce7] focus:ring-[#6c5ce7] flex-shrink-0"
                 required
               />
               <label htmlFor="terms" className="text-sm text-gray-600">
@@ -258,14 +259,14 @@ export function RegisterPage() {
             <Button
               type="submit"
               disabled={!isFormValid || isLoading}
-              className="w-full bg-[#6c5ce7] hover:bg-[#5d4ed6] h-12 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-[#6c5ce7] hover:bg-[#5d4ed6] h-10 sm:h-12 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
             >
               {isLoading ? "註冊中..." : "建立帳戶"}
             </Button>
           </form>
 
           {/* Login Link */}
-          <div className="mt-6 text-center">
+          <div className="mt-5 sm:mt-6 text-center">
             <span className="text-sm text-gray-600">已經有帳戶了？</span>
             <button
               type="button"
@@ -278,7 +279,7 @@ export function RegisterPage() {
         </div>
 
         {/* Back to Dashboard */}
-        <div className="mt-6 text-center">
+        <div className="mt-5 sm:mt-6 text-center">
           <button
             onClick={onBackToDashboard}
             className="text-sm text-gray-600 hover:text-gray-800"

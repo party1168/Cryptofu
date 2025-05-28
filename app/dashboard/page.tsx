@@ -8,7 +8,7 @@ import { HistoricalPerformanceChart } from "./historical-performance-chart";
 export default function Dashboard() {
   return (
     <div>
-      <div className="grid grid-cols-2 gap-6">
+    <div className="grid md:grid-cols-2 gap-4 lg:gap-6">
         {/* First Row */}
         <div className="col-span-1">
           <PriceChangeChart />
@@ -18,11 +18,11 @@ export default function Dashboard() {
           <ReturnRate />
         </div>
 
-        <div className="col-span-1">
+        <div className="col-span-1 md:col-span-2 xl:col-span-1">
           <HistoricalPerformanceChart />
         </div>
         {/* Second Row */}
-        <div className="col-span-1">
+        <div className="col-span-1 md:col-span-2 xl:col-span-1">
           <CurrentHoldings />
         </div>
       </div>

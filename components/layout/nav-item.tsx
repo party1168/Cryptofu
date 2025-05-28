@@ -15,7 +15,7 @@ export function NavItem({ id, label, icon, isActive, onClick }: NavItemProps) {
     <li id={id}>
       <button
         onClick={onClick}
-        className={`flex items-center gap-3 w-full p-2 rounded-lg ${
+        className={`flex items-center gap-3 w-full p-6 rounded-lg ${
           isActive ? "text-[#6c5ce7] bg-[#f5f4fa]" : "text-gray-500"
         }`}
       >

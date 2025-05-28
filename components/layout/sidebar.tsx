@@ -1,8 +1,8 @@
 "use client";
+import { X } from "lucide-react";
 import { NavItem } from "@/components/layout/nav-item";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
-
 
 const navItems = [
   {
@@ -87,16 +87,28 @@ const navItems = [
     ),
   },
 ];
-export function Sidebar() {
+export function Sidebar({ onClose }: { onClose?: () => void }) {
   const pathname = usePathname().replace("/", "") || "overview";
   const router = useRouter();
   return (
-    <div className="w-64 bg-white p-6 flex flex-col">
-      <div className="flex items-center gap-3 mb-10">
-        <div className="bg-[#6c5ce7] w-10 h-10 rounded-lg flex items-center justify-center">
-          <span className="text-white font-bold">C</span>
+    <div className="w-64 sm:w-72 lg:w-64 bg-white p-4 lg:p-6 flex flex-col h-full">
+      {/* Mobile Close Button */}
+      {onClose && (
+        <div className="flex justify-end mb-4 lg:hidden">
+          <button
+            onClick={onClose}
+            className="p-2 rounded-lg hover:bg-gray-100"
+          >
+            <X className="h-5 w-5 text-gray-500" />
+          </button>
         </div>
-        <span className="text-3xl font-bold text-gray-700">Cryptofu</span>
+      )}
+      {/* Mobile Title */}
+      <div className="flex items-center gap-3 mb-8 lg:mb-10">
+        <div className="bg-[#6c5ce7] w-8 h-8 lg:w-10 lg:h-10 rounded-lg flex items-center justify-center">
+          <span className="text-white font-bold text-sm lg:text-base">C</span>
+        </div>
+        <span className="text-sm lg:text-base font-medium">Cryptofu</span>
       </div>
 
       <nav className="flex-1">
