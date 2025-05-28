@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import Navbar from "../components/navbar";
-import Footer from "../components/footer";
 import ThemeProvider from "@/components/theme-provider";
 import { LanguageProvider } from "@/contexts/languageProvider";
 import { Toaster } from "react-hot-toast";
+import ClientLayout from "@/components/layout/client-layout";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -34,7 +33,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable}  font-sans antialiased`}
       >
-        <div className="flex flex-col min-h-screen bg-gradient-custom text-gray-100 relative ">
+        <div className="flex flex-col min-h-screen bg-gradient-custom relative ">
           <Toaster position="bottom-right" />
           <ThemeProvider
             attribute="class"
@@ -42,7 +41,9 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <LanguageProvider>{children}</LanguageProvider>
+            <LanguageProvider>
+              <ClientLayout>{children}</ClientLayout>
+            </LanguageProvider>
           </ThemeProvider>
         </div>
       </body>

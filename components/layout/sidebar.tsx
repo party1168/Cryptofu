@@ -1,16 +1,12 @@
 "use client";
-import { Download } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { NavItem } from "@/components/layout/nav-item";
+import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 
-interface SidebarProps {
-  activeTab: string;
-  setActiveTab: (tab: string) => void;
-}
 
 const navItems = [
   {
-    id: "overview",
+    id: "dashboard",
     label: "總覽",
     icon: (
       <svg
@@ -91,7 +87,9 @@ const navItems = [
     ),
   },
 ];
-export function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
+export function Sidebar() {
+  const pathname = usePathname().replace("/", "") || "overview";
+  const router = useRouter();
   return (
     <div className="w-64 bg-white p-6 flex flex-col">
       <div className="flex items-center gap-3 mb-10">
@@ -109,8 +107,8 @@ export function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
               id={item.id}
               label={item.label}
               icon={item.icon}
-              isActive={activeTab === item.id}
-              onClick={() => setActiveTab(item.id)}
+              isActive={pathname === item.id}
+              onClick={() => router.push(`/${item.id}`)}
             />
           ))}
         </ul>

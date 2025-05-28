@@ -12,7 +12,7 @@ interface NavItemProps {
 
 export function NavItem({ id, label, icon, isActive, onClick }: NavItemProps) {
   return (
-    <li>
+    <li id={id}>
       <button
         onClick={onClick}
         className={`flex items-center gap-3 w-full p-2 rounded-lg ${
