@@ -35,18 +35,14 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable}  font-sans antialiased`}
       >
         <div className="flex flex-col min-h-screen bg-gradient-custom text-gray-100 relative ">
-          <Toaster position="bottom-right"  />
+          <Toaster position="bottom-right" />
           <ThemeProvider
             attribute="class"
             defaultTheme="dark"
             enableSystem
             disableTransitionOnChange
           >
-            <LanguageProvider>
-              <Navbar />
-              {children}
-              <Footer />
-            </LanguageProvider>
+            <LanguageProvider>{children}</LanguageProvider>
           </ThemeProvider>
         </div>
       </body>
