@@ -6,21 +6,13 @@ import { useState } from "react";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
-  const router = useRouter();
-  const onGoToRegister = () => {
-    router.push("/register");
-  };
-  const onBackToDashboard = () => {
-    router.push("/dashboard");
-  };
 
   function onLogin(email: string, password: string): void {}
 
@@ -40,13 +32,14 @@ export function LoginPage() {
       <div className="w-full max-w-sm sm:max-w-md">
         {/* Logo Section */}
         <div className="text-center mb-6 sm:mb-8">
-          <div className="flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4">
-            <div className="bg-[#6c5ce7] w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center">
-              <span className="text-white font-bold text-lg sm:text-xl">C</span>
-            </div>
-            <span className="text-xl sm:text-2xl font-bold text-gray-800">Cryptofu</span>
+          <div className="flex items-center justify-center mb-3 sm:mb-4">
+            <span className="text-3xl sm:text-3xl font-bold text-gray-700">
+              Cryptofu
+            </span>
           </div>
-          <p className="text-sm sm:text-base text-gray-600">歡迎回來，請登入您的帳戶</p>
+          <p className="text-sm sm:text-base text-gray-600">
+            歡迎回來，請登入您的帳戶
+          </p>
         </div>
 
         {/* Login Form */}
@@ -54,7 +47,10 @@ export function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
             {/* Email Field */}
             <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium text-gray-700">
+              <label
+                htmlFor="email"
+                className="text-sm font-medium text-gray-700"
+              >
                 電子郵件
               </label>
               <div className="relative">
@@ -73,7 +69,10 @@ export function LoginPage() {
 
             {/* Password Field */}
             <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium text-gray-700">
+              <label
+                htmlFor="password"
+                className="text-sm font-medium text-gray-700"
+              >
                 密碼
               </label>
               <div className="relative">
@@ -104,10 +103,16 @@ export function LoginPage() {
             {/* Remember Me & Forgot Password */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
               <label className="flex items-center">
-                <input type="checkbox" className="rounded border-gray-300 text-[#6c5ce7] focus:ring-[#6c5ce7]" />
+                <input
+                  type="checkbox"
+                  className="rounded border-gray-300 text-[#6c5ce7] focus:ring-[#6c5ce7]"
+                />
                 <span className="ml-2 text-sm text-gray-600">記住我</span>
               </label>
-              <button type="button" className="text-sm text-[#6c5ce7] hover:text-[#5d4ed6] text-left sm:text-right">
+              <button
+                type="button"
+                className="text-sm text-[#6c5ce7] hover:text-[#5d4ed6] text-left sm:text-right"
+              >
                 忘記密碼？
               </button>
             </div>
@@ -124,23 +129,26 @@ export function LoginPage() {
           {/* Sign Up Link */}
           <div className="mt-5 sm:mt-6 text-center">
             <span className="text-sm text-gray-600">還沒有帳戶？</span>
-            <button
-              type="button"
-              onClick={onGoToRegister}
-              className="ml-1 text-sm text-[#6c5ce7] hover:text-[#5d4ed6] font-medium"
-            >
-              立即註冊
-            </button>
+            <Link href={"/register"}>
+              <button
+                type="button"
+                className="ml-1 text-sm text-[#6c5ce7] hover:text-[#5d4ed6] font-medium"
+              >
+                立即註冊
+              </button>
+            </Link>
           </div>
         </div>
 
         {/* Back to Dashboard */}
         <div className="mt-5 sm:mt-6 text-center">
-          <button onClick={onBackToDashboard} className="text-sm text-gray-600 hover:text-gray-800">
-            ← 返回儀表板
-          </button>
+          <Link href={"/dashboard"}>
+            <button className="text-sm text-gray-600 hover:text-gray-800">
+              ← 返回儀表板
+            </button>
+          </Link>
         </div>
       </div>
     </div>
-  )
+  );
 }

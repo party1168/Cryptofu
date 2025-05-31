@@ -37,7 +37,7 @@ export default function RootLayout({
           <Toaster position="bottom-right" />
           <ThemeProvider
             attribute="class"
-            defaultTheme="dark"
+            defaultTheme="system"
             enableSystem
             disableTransitionOnChange
           >

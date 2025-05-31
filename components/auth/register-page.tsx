@@ -3,27 +3,55 @@
 import type React from "react";
 
 import { useState } from "react";
-import { Eye, EyeOff, Mail, Lock, CheckCircle, XCircle } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  Mail,
+  Lock,
+  CheckCircle,
+  XCircle,
+  User,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import Link from "next/link";
+import axios from "axios";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export function RegisterPage() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
-  function onRegister(email: string, password: string): void {}
   const router = useRouter();
 
-  function onBackToLogin(): void {
-    router.push("/login");
-  }
-  function onBackToDashboard(): void {
-    router.push("/dashboard");
+  async function onRegister(
+    name: string,
+    email: string,
+    password: string
+  ): Promise<boolean> {
+    console.log("註冊請求:", { name, email, password });
+    setIsLoading(true);
+
+    return axios
+      .post("/api/auth/signup", {
+        name,
+        email,
+        password,
+      })
+      .then((response) => {
+        setIsLoading(false);
+        console.log("註冊回應:", response.data);
+        if (response.data.success) {
+          return true;
+        } else {
+          throw new Error(response.data.message || "註冊失敗");
+        }
+      });
   }
 
   // 密碼驗證規則
@@ -41,14 +69,21 @@ export function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isFormValid) return;
-
     setIsLoading(true);
-
-    // 模擬註冊延遲
-    setTimeout(() => {
-      onRegister(email, password);
+    const isSuccess: boolean = await onRegister(name, email, password);
+    try {
+      if (isSuccess) {
+        router.push("/login");
+        toast.success("註冊成功！請登入您的帳戶。");
+      }
+    } catch (err) {
+      toast.error("註冊失敗，請稍後再試。");
+      setName("");
+      setEmail("");
+      setPassword("");
       setIsLoading(false);
-    }, 1000);
+      return;
+    }
   };
 
   return (
@@ -70,6 +105,27 @@ export function RegisterPage() {
         {/* Register Form */}
         <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-sm">
           <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
+            {/* Username Field */}
+            <div className="space-y-2">
+              <label
+                htmlFor="name"
+                className="text-sm font-medium text-gray-700"
+              >
+                使用者姓名
+              </label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 sm:h-5 sm:w-5" />
+                <Input
+                  id="name"
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="請輸入您的使用者姓名"
+                  className="pl-9 sm:pl-10 bg-[#f5f4fa] text-gray-700 border-0 rounded-lg h-10 sm:h-12 text-sm sm:text-base"
+                  required
+                />
+              </div>
+            </div>
             {/* Email Field */}
             <div className="space-y-2">
               <label
@@ -86,7 +142,7 @@ export function RegisterPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="請輸入您的電子郵件"
-                  className="pl-9 sm:pl-10 bg-[#f5f4fa] border-0 rounded-lg h-10 sm:h-12 text-sm sm:text-base"
+                  className="pl-9 sm:pl-10 bg-[#f5f4fa] text-gray-700 border-0 rounded-lg h-10 sm:h-12 text-sm sm:text-base"
                   required
                 />
               </div>
@@ -108,7 +164,7 @@ export function RegisterPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="請輸入您的密碼"
-                  className="pl-9 sm:pl-10 pr-9 sm:pr-10 bg-[#f5f4fa] border-0 rounded-lg h-10 sm:h-12 text-sm sm:text-base"
+                  className="pl-9 sm:pl-10 pr-9 sm:pr-10 text-gray-700 bg-[#f5f4fa] border-0 rounded-lg h-10 sm:h-12 text-sm sm:text-base"
                   required
                 />
                 <button
@@ -195,7 +251,7 @@ export function RegisterPage() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="請再次輸入您的密碼"
-                  className="pl-9 sm:pl-10 pr-9 sm:pr-10 bg-[#f5f4fa] border-0 rounded-lg h-10 sm:h-12 text-sm sm:text-base"
+                  className="pl-9 sm:pl-10 pr-9 sm:pr-10 text-gray-700 bg-[#f5f4fa] border-0 rounded-lg h-10 sm:h-12 text-sm sm:text-base"
                   required
                 />
                 <button
@@ -268,24 +324,24 @@ export function RegisterPage() {
           {/* Login Link */}
           <div className="mt-5 sm:mt-6 text-center">
             <span className="text-sm text-gray-600">已經有帳戶了？</span>
-            <button
-              type="button"
-              onClick={onBackToLogin}
-              className="ml-1 text-sm text-[#6c5ce7] hover:text-[#5d4ed6] font-medium"
-            >
-              立即登入
-            </button>
+            <Link href={"/login"}>
+              <button
+                type="button"
+                className="ml-1 text-sm text-[#6c5ce7] hover:text-[#5d4ed6] font-medium"
+              >
+                立即登入
+              </button>
+            </Link>
           </div>
         </div>
 
         {/* Back to Dashboard */}
         <div className="mt-5 sm:mt-6 text-center">
-          <button
-            onClick={onBackToDashboard}
-            className="text-sm text-gray-600 hover:text-gray-800"
-          >
-            ← 返回儀表板
-          </button>
+          <Link href={"/dashboard"}>
+            <button className="text-sm text-gray-600 hover:text-gray-800">
+              ← 返回儀表板
+            </button>
+          </Link>
         </div>
       </div>
     </div>

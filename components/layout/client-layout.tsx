@@ -49,11 +49,11 @@ export default function ClientLayout({
             >
               <Menu className="h-5 w-5 text-gray-600" />
             </button>
-            <div className="flex items-center gap-3">
-              <div className="bg-[#6c5ce7] w-8 h-8 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">C</span>
-              </div>
-              <span className="text-lg font-bold">Cryptofu</span>
+            {/* Mobile Header Title */}
+            <div className="flex items-center">
+              <span className="text-xl lg:text-2xl font-bold text-gray-700">
+                Cryptofu
+              </span>
             </div>
             <div className="w-10"></div> {/* Spacer for centering */}
           </div>

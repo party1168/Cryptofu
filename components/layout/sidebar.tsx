@@ -3,6 +3,7 @@ import { X } from "lucide-react";
 import { NavItem } from "@/components/layout/nav-item";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const navItems = [
   {
@@ -104,12 +105,13 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
         </div>
       )}
       {/* Mobile Title */}
-      <div className="flex items-center gap-3 mb-8 lg:mb-10">
-        <div className="bg-[#6c5ce7] w-8 h-8 lg:w-10 lg:h-10 rounded-lg flex items-center justify-center">
-          <span className="text-white font-bold text-sm lg:text-base">C</span>
+      <Link href="/">
+        <div className="flex items-center mb-8 ml-5 lg:mb-10">
+          <span className="text-base lg:text-3xl font-bold text-gray-700">
+            Cryptofu
+          </span>
         </div>
-        <span className="text-sm lg:text-base font-medium">Cryptofu</span>
-      </div>
+      </Link>
 
       <nav className="flex-1">
         <ul className="space-y-1">
