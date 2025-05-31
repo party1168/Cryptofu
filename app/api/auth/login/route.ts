@@ -2,7 +2,65 @@ import User from "@/models/User";
 import bcrypt from "bcrypt";
 import connectDB from "@/lib/database/db";
 import { NextRequest, NextResponse } from "next/server";
-import { verifyToken } from "@/lib/utils/auth";
+import { verifyToken, generateToken } from "@/lib/utils/auth";
+import { serialize } from "cookie";
+
+export async function GET(request: NextRequest) {
+  const token = request.cookies.get("token")?.value;
+
+  if (!token) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Token is required",
+      },
+      {
+        status: 401,
+      }
+    );
+  }
+
+  try {
+    await connectDB();
+    const user = await verifyToken(token);
+    if (!user) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Invalid token",
+        },
+        {
+          status: 401,
+        }
+      );
+    }
+    return NextResponse.json(
+      {
+        success: true,
+        user: {
+          uuid: user.uuid,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+        },
+      },
+      {
+        status: 200,
+      }
+    );
+  } catch (err) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: (err as Error).message,
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+}
+
 /**
  * 處理用戶登入請求的 POST 方法。
  *
@@ -17,32 +75,32 @@ import { verifyToken } from "@/lib/utils/auth";
  * @throws {Error} 如果資料庫連接失敗或其他錯誤發生，會返回 500 狀態碼和錯誤訊息。
  */
 export async function POST(request: NextRequest) {
-  const authHeader = request.headers.get("Authorization");
-  if (!authHeader) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Authorization header is required",
-      },
-      {
-        status: 401,
-      }
-    );
-  }
-  const token = authHeader.split(" ")[1];
-  try {
-    await verifyToken(token);
-  } catch (err) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: (err as Error).message,
-      },
-      {
-        status: 401,
-      }
-    );
-  }
+  // const authHeader = request.headers.get("Authorization");
+  // if (!authHeader) {
+  //   return NextResponse.json(
+  //     {
+  //       success: false,
+  //       message: "Authorization header is required",
+  //     },
+  //     {
+  //       status: 401,
+  //     }
+  //   );
+  // }
+  // const token = authHeader.split(" ")[1];
+  // try {
+  //   await verifyToken(token);
+  // } catch (err) {
+  //   return NextResponse.json(
+  //     {
+  //       success: false,
+  //       message: (err as Error).message,
+  //     },
+  //     {
+  //       status: 401,
+  //     }
+  //   );
+  // }
   try {
     await connectDB();
     const { email, password } = await request.json();
@@ -88,15 +146,30 @@ export async function POST(request: NextRequest) {
       existingUser.password
     );
     if (isVerify) {
-      return NextResponse.json(
+      const token = generateToken({
+        uuid: existingUser.uuid,
+        email: existingUser.email,
+        name: existingUser.name,
+        role: existingUser.role,
+      });
+      const cookie = serialize("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 60 * 60 * 24, // 1 day
+        sameSite: "lax",
+        path: "/",
+      });
+      const response = NextResponse.json(
         {
           success: true,
-          message: "Login success",
+          message: "Login successful",
         },
         {
           status: 200,
         }
       );
+      response.headers.set("Set-Cookie", cookie);
+      return response;
     } else {
       return NextResponse.json(
         {

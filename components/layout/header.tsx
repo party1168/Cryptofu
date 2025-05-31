@@ -1,6 +1,12 @@
 "use client";
 import { Bell, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 
 interface User {
@@ -25,9 +31,25 @@ export function Header({ isLoggedIn, user }: HeaderProps) {
         </button>
 
         {isLoggedIn ? (
-          <div className="flex items-center gap-3 bg-[#f5f4fa] py-2 px-4 rounded-lg">
-            <span className="text-sm font-medium">{user?.name}</span>
-          </div>
+          <DropdownMenu >
+            <DropdownMenuTrigger className=" bg-[#f5f4fa] py-2 px-4 rounded-lg cursor-pointer">
+              <span className="text-sm font-medium text-gray-700">
+                {user?.name}
+              </span>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className=" bg-[#f5f4fa] text-gray-700 w-48">
+              <DropdownMenuItem asChild>
+                <Link href="/profile" >
+                  個人資料
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/logout" >
+                  登出
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         ) : (
           <Link href="/login">
             <Button className="bg-[#6c5ce7] hover:bg-[#5d4ed6] text-xs lg:text-sm px-3 lg:px-4">

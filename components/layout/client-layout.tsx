@@ -2,12 +2,10 @@
 import { usePathname } from "next/navigation";
 import { Sidebar } from "./sidebar";
 import { Header } from "./header";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu } from "lucide-react";
-interface User {
-  name: string;
-  email: string;
-}
+import { V_IUser } from "@/interfaces/models";
+import axios from "axios";
 
 export default function ClientLayout({
   children,
@@ -17,8 +15,34 @@ export default function ClientLayout({
   const pathname = usePathname();
   const hideLayout = ["/login", "/register"].includes(pathname);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<V_IUser | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const checkLoginStatus = async () => {
+    try {
+      const res = await axios.get("/api/auth/login");
+      console.log("Login status response:", res.data);
+      // 200 狀態走這裡
+      setIsLoggedIn(true);
+      setUser(res.data.user);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 401) {
+          // token 沒有或失效，這裡靜默處理
+          setIsLoggedIn(false);
+          setUser(null);
+        } else {
+          console.error("Unexpected response status:", error.response?.status);
+        }
+      } else {
+        console.error("Unknown error:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    // Check login status when the component mounts
+    checkLoginStatus();
+  }, []);
   if (hideLayout) {
     return children;
   }

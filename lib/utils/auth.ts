@@ -1,7 +1,10 @@
 import jwt from "jsonwebtoken";
 import redis from "@/lib/database/redis";
 
-const secret = process.env.JWT_SECRET || "0.";
+const secret = process.env.JWT_SECRET;
+if (!secret) {
+  throw new Error("JWT_SECRET is not defined in environment variables");
+}
 
 // 生成 jwt token
 export const generateToken = (user: {
@@ -20,6 +23,9 @@ export const blocklistToken = async (token: string) => {
       throw new Error("Invalid token");
     }
     const expiration = decoded.exp - Math.floor(Date.now() / 1000);
+    if (expiration <= 0) {
+      throw new Error("Token has already expired");
+    }
     await redis.set(token, "blacklisted", "EX", expiration);
   } catch (err) {
     throw err;
@@ -33,7 +39,7 @@ export const blocklistToken = async (token: string) => {
  * @returns 解碼後的用戶信息對象，包括 uuid、email、name 和 role
  * @throws 如果 token 無效或過期，則拋出錯誤
  */
-export const verifyToken = async(token: string) => {
+export const verifyToken = async (token: string) => {
   try {
     const isBlacklisted = await redis.get(token);
     if (isBlacklisted) {

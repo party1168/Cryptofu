@@ -6,25 +6,45 @@ import { useState } from "react";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
+import axios from "axios";
 
 export function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
-  function onLogin(email: string, password: string): void {}
+  async function onLogin(email: string, password: string): Promise<boolean> {
+    // Replace this with your actual login logic
+    // For example, you might call an API endpoint to authenticate the user
+    const isSuccess = await axios
+      .post("api/auth/login", {
+        email,
+        password,
+      })
+      .then((response) => {
+        return response.data.success as boolean;
+      });
+    return isSuccess;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-
-    // 模擬登入延遲
-    setTimeout(() => {
-      onLogin(email, password);
+    try {
+      // Call your login function here
+      await onLogin(email, password);
+      // Redirect to dashboard or home page after successful login
+      router.push("/dashboard");
+    } catch (error) {
+      console.error("Login failed:", error);
+      // Handle login error (e.g., show a notification)
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   return (
@@ -61,7 +81,7 @@ export function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="請輸入您的電子郵件"
-                  className="pl-9 sm:pl-10 bg-[#f5f4fa] border-0 rounded-lg h-10 sm:h-12 text-sm sm:text-base"
+                  className="pl-9 sm:pl-10 text-gray-700 bg-[#f5f4fa] border-0 rounded-lg h-10 sm:h-12 text-sm sm:text-base"
                   required
                 />
               </div>
@@ -83,7 +103,7 @@ export function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="請輸入您的密碼"
-                  className="pl-9 sm:pl-10 pr-9 sm:pr-10 bg-[#f5f4fa] border-0 rounded-lg h-10 sm:h-12 text-sm sm:text-base"
+                  className="pl-9 sm:pl-10 text-gray-700 pr-9 sm:pr-10 bg-[#f5f4fa] border-0 rounded-lg h-10 sm:h-12 text-sm sm:text-base"
                   required
                 />
                 <button
